@@ -33150,3 +33150,150 @@ parsing.
 [0m02:29:51.813403 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002354192D450>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000235419A9210>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000235531FAF10>]}
 [0m02:29:51.814725 [debug] [MainThread]: Flushing usage events
 [0m02:29:53.274486 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m02:41:16.160871 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D0E750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D0E990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D0CA10>]}
+
+
+============================== 02:41:16.160871 | 28d637b2-7e7b-408b-93f9-9978ef8ef340 ==============================
+[0m02:41:16.160871 [info ] [MainThread]: Running with dbt=1.11.2
+[0m02:41:16.160871 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'write_json': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'profiles_dir': 'I:\\dianababaei\\dbt\\sample-dbt-project', 'debug': 'False', 'static_parser': 'True', 'log_cache_events': 'False', 'empty': 'None', 'log_format': 'default', 'quiet': 'True', 'use_colors': 'True', 'partial_parse': 'True', 'version_check': 'True', 'log_path': 'I:\\dianababaei\\dbt\\sample-dbt-project\\logs', 'introspect': 'True', 'no_print': 'None', 'fail_fast': 'False', 'invocation_command': 'dbt test --quiet', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'send_anonymous_usage_stats': 'True', 'indirect_selection': 'eager', 'target_path': 'None', 'use_experimental_parser': 'False'}
+[0m02:41:16.171938 [error] [MainThread]: Encountered an error:
+Parsing Error
+  Env var required but not provided: 'SNOWFLAKE_ACCOUNT'
+[0m02:41:16.171938 [debug] [MainThread]: Command `dbt test` failed at 02:41:16.171938 after 0.11 seconds
+[0m02:41:16.171938 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D8FFD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D0CA10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BC77D0D150>]}
+[0m02:41:16.171938 [debug] [MainThread]: Flushing usage events
+[0m02:41:19.260454 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m02:41:53.481784 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA266FF090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA266FC9D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA266FF650>]}
+
+
+============================== 02:41:53.493163 | 821314cb-2c93-4bc1-a382-c8c91b79089d ==============================
+[0m02:41:53.493163 [info ] [MainThread]: Running with dbt=1.11.2
+[0m02:41:53.493163 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'warn_error': 'None', 'empty': 'None', 'debug': 'False', 'static_parser': 'True', 'log_cache_events': 'False', 'profiles_dir': 'I:\\dianababaei\\dbt\\sample-dbt-project', 'log_format': 'default', 'quiet': 'True', 'use_colors': 'True', 'partial_parse': 'True', 'version_check': 'True', 'log_path': 'I:\\dianababaei\\dbt\\sample-dbt-project\\logs', 'introspect': 'True', 'no_print': 'None', 'fail_fast': 'False', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'invocation_command': 'dbt test --quiet', 'send_anonymous_usage_stats': 'True', 'indirect_selection': 'eager', 'target_path': 'None', 'write_json': 'True'}
+[0m02:41:54.279976 [debug] [MainThread]: Snowflake adapter: Setting snowflake.connector to ERROR (file logging only)
+[0m02:41:54.279976 [debug] [MainThread]: Snowflake adapter: Setting botocore to ERROR (file logging only)
+[0m02:41:54.279976 [debug] [MainThread]: Snowflake adapter: Setting boto3 to ERROR (file logging only)
+[0m02:41:54.429133 [warn ] [MainThread]: [[33mWARNING[0m][MissingPlusPrefixDeprecation]: Deprecated functionality
+Missing '+' prefix on `bain_capital_portfolio_analytics` found at
+`bain_capital_portfolio_analytics` in file
+`I:\dianababaei\dbt\sample-dbt-project\dbt_project.yml`. Hierarchical config
+values without a '+' prefix are deprecated in dbt_project.yml.
+[0m02:41:54.429133 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA38AB1C50>]}
+[0m02:41:54.621073 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA38BB1190>]}
+[0m02:41:54.691847 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA256D9510>]}
+[0m02:41:54.691847 [info ] [MainThread]: Registered adapter: snowflake=1.11.1
+[0m02:41:55.070306 [debug] [MainThread]: checksum: 3d40d8bbe1bef07db1c24822f2dbfff8bc07f2a48ed4fe2658a40653aec0b54b, vars: {}, profile: , target: , version: 1.11.2
+[0m02:41:55.301572 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m02:41:55.301572 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m02:41:55.312712 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m02:41:55.391088 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA3919AB90>]}
+[0m02:41:55.570552 [debug] [MainThread]: Wrote artifact WritableManifest to I:\dianababaei\dbt\sample-dbt-project\target\manifest.json
+[0m02:41:55.570552 [debug] [MainThread]: Wrote artifact SemanticManifest to I:\dianababaei\dbt\sample-dbt-project\target\semantic_manifest.json
+[0m02:41:55.614713 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA394D3E10>]}
+[0m02:41:55.616718 [info ] [MainThread]: Found 16 models, 1 analysis, 65 data tests, 13 seeds, 12 sources, 662 macros
+[0m02:41:55.616718 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': '821314cb-2c93-4bc1-a382-c8c91b79089d', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA38C086D0>]}
+[0m02:41:55.623470 [info ] [MainThread]: 
+[0m02:41:55.625674 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m02:41:55.626669 [info ] [MainThread]: 
+[0m02:41:55.627274 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m02:41:55.635808 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BAIN_ANALYTICS_DEV'
+[0m02:41:55.715414 [debug] [ThreadPool]: Using snowflake connection "list_BAIN_ANALYTICS_DEV"
+[0m02:41:55.715414 [debug] [ThreadPool]: On list_BAIN_ANALYTICS_DEV: show objects in BAIN_ANALYTICS.DEV
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.11.2", "profile_name": "bain_capital", "target_name": "dev", "connection_name": "list_BAIN_ANALYTICS_DEV"} */;
+[0m02:41:55.724154 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m02:41:58.626300 [debug] [ThreadPool]: Snowflake adapter: Error running SQL: show objects in BAIN_ANALYTICS.DEV
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.11.2", "profile_name": "bain_capital", "target_name": "dev", "connection_name": "list_BAIN_ANALYTICS_DEV"} */;
+[0m02:41:58.626300 [debug] [ThreadPool]: Snowflake adapter: Rolling back transaction.
+[0m02:41:58.634396 [debug] [ThreadPool]: Snowflake adapter: Error running SQL: macro list_relations_without_caching
+[0m02:41:58.635710 [debug] [ThreadPool]: Snowflake adapter: Rolling back transaction.
+[0m02:41:58.635710 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m02:41:58.635710 [debug] [MainThread]: Connection 'list_BAIN_ANALYTICS_DEV' was left open.
+[0m02:41:58.635710 [debug] [MainThread]: On list_BAIN_ANALYTICS_DEV: No close available on handle
+[0m02:41:58.645718 [info ] [MainThread]: 
+[0m02:41:58.647257 [info ] [MainThread]: Finished running  in 0 hours 0 minutes and 3.02 seconds (3.02s).
+[0m02:41:58.647257 [error] [MainThread]: Encountered an error:
+Database Error
+  250001 (08001): Failed to connect to DB: IHB62607.snowflakecomputing.com:443. Incorrect username or password was specified.
+[0m02:41:58.647257 [warn ] [MainThread]: [[33mWARNING[0m][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingPlusPrefixDeprecation: 1 occurrence
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.
+[0m02:41:58.647257 [debug] [MainThread]: Command `dbt test` failed at 02:41:58.647257 after 5.26 seconds
+[0m02:41:58.658864 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA267696D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA39729950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001BA3972AED0>]}
+[0m02:41:58.658864 [debug] [MainThread]: Flushing usage events
+[0m02:42:00.771609 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m02:42:14.424506 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199C9EF90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199C9D9D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199C9D690>]}
+
+
+============================== 02:42:14.424506 | dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c ==============================
+[0m02:42:14.424506 [info ] [MainThread]: Running with dbt=1.11.2
+[0m02:42:14.424506 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'use_experimental_parser': 'False', 'cache_selected_only': 'False', 'warn_error': 'None', 'profiles_dir': 'I:\\dianababaei\\dbt\\sample-dbt-project', 'debug': 'False', 'static_parser': 'True', 'log_cache_events': 'False', 'empty': 'None', 'log_format': 'default', 'quiet': 'False', 'use_colors': 'True', 'partial_parse': 'True', 'version_check': 'True', 'log_path': 'I:\\dianababaei\\dbt\\sample-dbt-project\\logs', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'fail_fast': 'False', 'no_print': 'None', 'invocation_command': 'dbt test', 'send_anonymous_usage_stats': 'True', 'indirect_selection': 'eager', 'write_json': 'True', 'target_path': 'None'}
+[0m02:42:15.157715 [debug] [MainThread]: Snowflake adapter: Setting snowflake.connector to ERROR (file logging only)
+[0m02:42:15.157715 [debug] [MainThread]: Snowflake adapter: Setting botocore to ERROR (file logging only)
+[0m02:42:15.157715 [debug] [MainThread]: Snowflake adapter: Setting boto3 to ERROR (file logging only)
+[0m02:42:15.293302 [warn ] [MainThread]: [[33mWARNING[0m][MissingPlusPrefixDeprecation]: Deprecated functionality
+Missing '+' prefix on `bain_capital_portfolio_analytics` found at
+`bain_capital_portfolio_analytics` in file
+`I:\dianababaei\dbt\sample-dbt-project\dbt_project.yml`. Hierarchical config
+values without a '+' prefix are deprecated in dbt_project.yml.
+[0m02:42:15.293302 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'deprecation', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'property_': 'warn', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B1AC051890>]}
+[0m02:42:15.460094 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'project_id', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199C92510>]}
+[0m02:42:15.523638 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'adapter_info', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B198C8D410>]}
+[0m02:42:15.524346 [info ] [MainThread]: Registered adapter: snowflake=1.11.1
+[0m02:42:15.958521 [debug] [MainThread]: checksum: 3d40d8bbe1bef07db1c24822f2dbfff8bc07f2a48ed4fe2658a40653aec0b54b, vars: {}, profile: , target: , version: 1.11.2
+[0m02:42:16.224448 [debug] [MainThread]: Partial parsing enabled: 0 files deleted, 0 files added, 0 files changed.
+[0m02:42:16.226452 [debug] [MainThread]: Nothing changed, skipping partial parsing.
+[0m02:42:16.226452 [debug] [MainThread]: Partial parsing enabled, no changes found, skipping parsing
+[0m02:42:16.301069 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'load_project', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B1AC178950>]}
+[0m02:42:16.473220 [debug] [MainThread]: Wrote artifact WritableManifest to I:\dianababaei\dbt\sample-dbt-project\target\manifest.json
+[0m02:42:16.479333 [debug] [MainThread]: Wrote artifact SemanticManifest to I:\dianababaei\dbt\sample-dbt-project\target\semantic_manifest.json
+[0m02:42:16.521631 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'resource_counts', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B1ACA49F50>]}
+[0m02:42:16.523076 [info ] [MainThread]: Found 16 models, 1 analysis, 65 data tests, 13 seeds, 12 sources, 662 macros
+[0m02:42:16.524015 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'runnable_timing', 'label': 'dbac7286-cf6a-4385-b3e3-7eb1d4d42d0c', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199CF9510>]}
+[0m02:42:16.526020 [info ] [MainThread]: 
+[0m02:42:16.526020 [info ] [MainThread]: Concurrency: 4 threads (target='dev')
+[0m02:42:16.526020 [info ] [MainThread]: 
+[0m02:42:16.526020 [debug] [MainThread]: Acquiring new snowflake connection 'master'
+[0m02:42:16.535617 [debug] [ThreadPool]: Acquiring new snowflake connection 'list_BAIN_ANALYTICS_DEV'
+[0m02:42:16.617122 [debug] [ThreadPool]: Using snowflake connection "list_BAIN_ANALYTICS_DEV"
+[0m02:42:16.617122 [debug] [ThreadPool]: On list_BAIN_ANALYTICS_DEV: show objects in BAIN_ANALYTICS.DEV
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.11.2", "profile_name": "bain_capital", "target_name": "dev", "connection_name": "list_BAIN_ANALYTICS_DEV"} */;
+[0m02:42:16.623778 [debug] [ThreadPool]: Opening a new connection, currently in state init
+[0m02:42:19.560966 [debug] [ThreadPool]: Snowflake adapter: Error running SQL: show objects in BAIN_ANALYTICS.DEV
+    limit 10000
+    
+
+/* {"app": "dbt", "dbt_version": "1.11.2", "profile_name": "bain_capital", "target_name": "dev", "connection_name": "list_BAIN_ANALYTICS_DEV"} */;
+[0m02:42:19.560966 [debug] [ThreadPool]: Snowflake adapter: Rolling back transaction.
+[0m02:42:19.560966 [debug] [ThreadPool]: Snowflake adapter: Error running SQL: macro list_relations_without_caching
+[0m02:42:19.560966 [debug] [ThreadPool]: Snowflake adapter: Rolling back transaction.
+[0m02:42:19.560966 [debug] [MainThread]: Connection 'master' was properly closed.
+[0m02:42:19.560966 [debug] [MainThread]: Connection 'list_BAIN_ANALYTICS_DEV' was left open.
+[0m02:42:19.567119 [debug] [MainThread]: On list_BAIN_ANALYTICS_DEV: No close available on handle
+[0m02:42:19.568399 [info ] [MainThread]: 
+[0m02:42:19.569527 [info ] [MainThread]: Finished running  in 0 hours 0 minutes and 3.04 seconds (3.04s).
+[0m02:42:19.570066 [error] [MainThread]: Encountered an error:
+Database Error
+  250001 (08001): Failed to connect to DB: IHB62607.snowflakecomputing.com:443. Incorrect username or password was specified.
+[0m02:42:19.570066 [warn ] [MainThread]: [[33mWARNING[0m][DeprecationsSummary]: Deprecated functionality
+Summary of encountered deprecations:
+- MissingPlusPrefixDeprecation: 1 occurrence
+To see all deprecation instances instead of just the first occurrence of each,
+run command again with the `--show-all-deprecations` flag. You may also need to
+run with `--no-partial-parse` as some deprecations are only encountered during
+parsing.
+[0m02:42:19.571935 [debug] [MainThread]: Command `dbt test` failed at 02:42:19.571935 after 5.23 seconds
+[0m02:42:19.571935 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B199D09510>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B193256450>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B1ACCBC990>]}
+[0m02:42:19.573938 [debug] [MainThread]: Flushing usage events
+[0m02:42:22.770509 [debug] [MainThread]: An error was encountered while trying to flush usage events
