@@ -1,11 +1,11 @@
 {
   "metadata": {
-    "timestamp": "2026-01-25T14:38:53.872564",
+    "timestamp": "2026-01-25T14:46:40.264149",
     "row_count": 49,
     "table": "FACT_CASHFLOW_SUMMARY",
     "schema": "DEV",
     "database": "BAIN_ANALYTICS",
-    "query_execution_time_seconds": 4.8025,
+    "query_execution_time_seconds": 4.1703,
     "rows_affected": 49
   },
   "data": [

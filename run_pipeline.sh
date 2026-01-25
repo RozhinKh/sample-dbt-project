@@ -1,6 +1,13 @@
 #!/bin/bash
 set -e
 
+# Ensure environment variables are set
+if [ -z "$SNOWFLAKE_ACCOUNT" ] || [ -z "$SNOWFLAKE_USER" ] || [ -z "$SNOWFLAKE_PASSWORD" ]; then
+    echo "ERROR: Snowflake credentials not set"
+    echo "Please set: SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD"
+    exit 1
+fi
+
 START_TIME=$(date +%s%N)
 
 echo "=========================================="
@@ -35,7 +42,7 @@ echo ""
 
 # Step 5: Generate report (query actual data from Snowflake)
 echo "📄 Generating report from Snowflake..."
-python3 extract_report.py
+python extract_report.py
 
 END_TIME=$(date +%s%N)
 ELAPSED_MS=$(( (END_TIME - START_TIME) / 1000000 ))
