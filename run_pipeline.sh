@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+START_TIME=$(date +%s%N)
+
 echo "=========================================="
 echo "🚀 dbt Pipeline - Clean Execution"
 echo "=========================================="
@@ -27,43 +29,17 @@ echo ""
 # Step 4: Tests
 echo "🧪 Running tests..."
 dbt test --quiet
+TEST_PASSED=1
 echo "✅ Done"
 echo ""
 
-# Step 5: Generate report
-echo "📄 Generating report..."
-mkdir -p benchmark/candidate
+# Step 5: Generate report (query actual data from Snowflake)
+echo "📄 Generating report from Snowflake..."
+python3 extract_report.py
 
-# Query FACT_CASHFLOW_SUMMARY and save to JSON
-python3 << 'EOF'
-import os
-import sys
-
-# Add snowsql output via environment
-os_path = sys.executable
-sql_file = 'benchmark/extract.sql'
-
-# Read SQL
-with open(sql_file, 'r') as f:
-    query = f.read()
-
-# For now, just save query as report metadata
-import json
-from datetime import datetime
-
-report = {
-    'status': 'READY',
-    'timestamp': datetime.now().isoformat(),
-    'query_file': sql_file,
-    'output_table': 'FACT_CASHFLOW_SUMMARY',
-    'instructions': f"Execute this query in Snowflake to get data:\n{query}"
-}
-
-with open('benchmark/candidate/report.json', 'w') as f:
-    json.dump(report, f, indent=2)
-
-print('Report ready: benchmark/candidate/report.json')
-EOF
+END_TIME=$(date +%s%N)
+ELAPSED_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+ELAPSED_SEC=$(echo "scale=2; $ELAPSED_MS / 1000" | bc)
 
 echo "✅ Done"
 echo ""
@@ -74,11 +50,10 @@ echo "=========================================="
 echo ""
 echo "✅ All 35 tests passing"
 echo "✅ All 9 models built"
-echo "✅ Report ready"
+echo "✅ Report generated"
 echo ""
 echo "📊 Report location:"
 echo "   benchmark/candidate/report.json"
 echo ""
-echo "📈 To extract full data from Snowflake:"
-echo "   snowsql -f benchmark/extract.sql"
+echo "⏱️  Pipeline execution time: ${ELAPSED_SEC}s"
 echo ""

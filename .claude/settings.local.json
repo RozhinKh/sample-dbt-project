@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(export SNOWFLAKE_USER=\"diana\")",
+      "Bash(python3:*)",
+      "Bash(python -m pip:*)",
+      "Bash(python:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
+    ]
+  }
+}
