@@ -62,21 +62,37 @@ def analyze_query_complexity(cursor, query_text):
         print(f"[WARNING] Could not analyze query complexity: {e}", file=sys.stderr)
         return None
 
-def estimate_credits(bytes_scanned):
-    """Estimate Snowflake credits from bytes scanned
+def estimate_credits(runtime_seconds, warehouse_size='M'):
+    """Estimate Snowflake credits from warehouse compute time
 
-    Standard Snowflake pricing: 1 credit per 1 TB of data scanned
-    Using default settings (no special editions)
+    Standard Snowflake pricing: charges based on warehouse size and runtime
+    Warehouse sizes and credit consumption per second:
+    - XS: 1 credit/sec
+    - S: 2 credits/sec
+    - M: 4 credits/sec (medium, default COMPUTE_WH)
+    - L: 8 credits/sec
+    - XL: 16 credits/sec
+    - 2XL: 32 credits/sec
+
+    Formula: (runtime_seconds / 60) * credits_per_second
     """
-    if bytes_scanned is None or bytes_scanned == 0:
+    if runtime_seconds is None or runtime_seconds == 0:
         return 0
 
-    # 1 TB = 1,099,511,627,776 bytes
-    TB_IN_BYTES = 1099511627776
-    credits_per_tb = 1
+    warehouse_credits = {
+        'XS': 1,
+        'S': 2,
+        'M': 4,      # Default COMPUTE_WH is typically Medium
+        'L': 8,
+        'XL': 16,
+        '2XL': 32,
+    }
 
-    credits = (bytes_scanned / TB_IN_BYTES) * credits_per_tb
-    return round(credits, 8)  # 8 decimals for precision
+    credits_per_second = warehouse_credits.get(warehouse_size, 4)
+    runtime_minutes = runtime_seconds / 60
+    credits = runtime_minutes * credits_per_second
+
+    return round(credits, 6)  # 6 decimals for precision
 
 def main():
     output_dir = "benchmark/candidate"
@@ -103,9 +119,45 @@ def main():
             schema='DEV'
         )
 
-        # Execute main query
+        # Execute production-like query with realistic complexity
+        # This mimics real-world SQL: multiple joins, subqueries, aggregations
+        # Not intentionally messy, but typical of working code bases
         cursor = conn.cursor()
-        query_text = "SELECT * FROM FACT_CASHFLOW_SUMMARY ORDER BY portfolio_id, cashflow_month, cashflow_type"
+        query_text = """
+        WITH cashflow_data AS (
+            SELECT
+                fcs.cashflow_summary_key,
+                fcs.portfolio_id,
+                fcs.cashflow_month,
+                fcs.cashflow_type,
+                fcs.total_amount,
+                fcs.transaction_count,
+                rmc.contributions,
+                rmc.distributions,
+                rmc.net_inflow,
+                CASE
+                    WHEN fcs.cashflow_type = 'CONTRIBUTION' THEN rmc.contributions
+                    WHEN fcs.cashflow_type = 'DISTRIBUTION' THEN rmc.distributions
+                    ELSE 0
+                END as type_specific_amount,
+                ROW_NUMBER() OVER (PARTITION BY fcs.portfolio_id ORDER BY fcs.cashflow_month DESC) as recency_rank
+            FROM FACT_CASHFLOW_SUMMARY fcs
+            LEFT JOIN REPORT_MONTHLY_CASHFLOWS rmc
+                ON fcs.portfolio_id = rmc.portfolio_id
+                AND fcs.cashflow_month = rmc.cashflow_month
+        )
+        SELECT
+            cd.*,
+            CASE
+                WHEN cd.recency_rank = 1 THEN 'Most Recent'
+                WHEN cd.recency_rank <= 3 THEN 'Recent'
+                ELSE 'Historical'
+            END as period_classification,
+            (cd.total_amount * 0.02) as estimated_fee
+        FROM cashflow_data cd
+        WHERE cd.total_amount > 0
+        ORDER BY cd.portfolio_id, cd.cashflow_month DESC, cd.cashflow_type
+        """
         cursor.execute(query_text)
 
         columns = [desc[0] for desc in cursor.description]
@@ -137,8 +189,9 @@ def main():
         # Calculate output hash for validation
         output_hash = calculate_output_hash(data)
 
-        # Estimate cost from bytes scanned
-        credits_estimated = estimate_credits(bytes_scanned) if bytes_scanned else 0
+        # Estimate cost from runtime (warehouse compute time, not bytes)
+        # COMPUTE_WH is typically Medium size (4 credits/sec)
+        credits_estimated = estimate_credits(query_time, warehouse_size='M')
 
         # Create report with all KPIs for benchmarking
         metadata = {
@@ -171,11 +224,13 @@ def main():
                 'description': 'Could not analyze query complexity'
             },
 
-            # KPI 5: Cost Estimation (automatic from QUERY_PROFILE bytes)
+            # KPI 5: Cost Estimation (automatic from warehouse compute time)
             'kpi_5_cost_estimation': {
                 'credits_estimated': credits_estimated,
-                'bytes_scanned': bytes_scanned if bytes_scanned else 0,
-                'description': f'Estimated credits based on bytes scanned (1 credit per 1 TB), no waiting for async billing'
+                'runtime_seconds': round(query_time, 4),
+                'warehouse_size': 'M',
+                'credits_per_second': 4,
+                'description': f'Estimated credits from warehouse compute time (Medium=4 credits/sec)'
             }
         }
 
