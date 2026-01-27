@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-27T21:34:02.915358",
+    "pipeline": "Pipeline A - Simple Cashflow Analysis",
+    "pipeline_code": "A",
+    "complexity_level": "SIMPLE",
+    "target_table": "FACT_CASHFLOW_SUMMARY",
+    "model_count": 4,
+    "models": ["stg_cashflows", "stg_portfolios", "fact_cashflow_summary", "report_monthly_cashflows"]
+  },
+  "kpi_1_execution": {
+    "runtime_seconds": 3.2,
+    "description": "End-to-end query execution time"
+  },
+  "kpi_2_work_metrics": {
+    "rows_returned": 426,
+    "bytes_scanned": 512000,
+    "description": "Rows and bytes scanned from Snowflake QUERY_PROFILE"
+  },
+  "kpi_3_output_validation": {
+    "row_count": 426,
+    "output_hash": "5c66064a4479f0b58592299bbac97cffbb8cbb0813cfaa6fd3c7bbb09858272f",
+    "hash_algorithm": "SHA256",
+    "description": "Hash for output equivalence checking"
+  },
+  "kpi_4_complexity": {
+    "num_joins": 1,
+    "num_ctes": 4,
+    "num_window_functions": 1,
+    "num_subqueries": 0,
+    "complexity_score": 5.5,
+    "description": "Query complexity metrics"
+  },
+  "kpi_5_cost_estimation": {
+    "credits_estimated": 0.003556,
+    "runtime_seconds": 3.2,
+    "warehouse_size": "M",
+    "credits_per_second": 4,
+    "description": "Estimated Snowflake credits"
+  },
+  "optimization_opportunities": [
+    {
+      "rank": 1,
+      "issue": "Remove unnecessary DISTINCT in stg_cashflows",
+      "expected_improvement": "5-10% runtime reduction"
+    },
+    {
+      "rank": 2,
+      "issue": "Push date filters upstream before transformation",
+      "expected_improvement": "15-20% row reduction"
+    },
+    {
+      "rank": 3,
+      "issue": "Consolidate 7 date calculations into 1-2 expressions",
+      "expected_improvement": "10-15% runtime reduction"
+    },
+    {
+      "rank": 4,
+      "issue": "Apply aggregation before JOIN instead of after",
+      "expected_improvement": "20-30% row reduction"
+    }
+  ],
+  "status": "BASELINE"
+}

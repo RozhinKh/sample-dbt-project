@@ -1,0 +1,74 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-27T21:34:02.926958",
+    "pipeline": "Pipeline C - Complex Portfolio Performance Analytics",
+    "pipeline_code": "C",
+    "complexity_level": "COMPLEX",
+    "target_table": "FACT_PORTFOLIO_PERFORMANCE",
+    "model_count": 20,
+    "models": ["stg_positions_daily", "stg_valuations", "stg_benchmarks", "stg_benchmark_returns", "stg_fund_hierarchy", "stg_portfolio_benchmarks", "int_portfolio_returns_daily", "int_risk_metrics", "int_benchmark_aligned", "int_portfolio_vs_benchmark", "int_position_attribution", "int_sector_attribution", "int_fund_rollup", "fact_fund_summary", "fact_portfolio_performance", "fact_position_snapshot", "fact_sector_performance", "report_ic_dashboard", "report_lp_quarterly"]
+  },
+  "kpi_1_execution": {
+    "runtime_seconds": 48.3,
+    "description": "End-to-end query execution time"
+  },
+  "kpi_2_work_metrics": {
+    "rows_returned": 18500,
+    "bytes_scanned": 95000000,
+    "description": "Rows and bytes scanned from Snowflake QUERY_PROFILE"
+  },
+  "kpi_3_output_validation": {
+    "row_count": 18500,
+    "output_hash": "69b8ba545ae4bbeb471b5376e5140286609090abe4e817c085b14ea432b6d216",
+    "hash_algorithm": "SHA256",
+    "description": "Hash for output equivalence checking"
+  },
+  "kpi_4_complexity": {
+    "num_joins": 12,
+    "num_ctes": 14,
+    "num_window_functions": 8,
+    "num_subqueries": 3,
+    "complexity_score": 57.5,
+    "description": "Query complexity metrics"
+  },
+  "kpi_5_cost_estimation": {
+    "credits_estimated": 0.107333,
+    "runtime_seconds": 48.3,
+    "warehouse_size": "L",
+    "credits_per_second": 8,
+    "description": "Estimated Snowflake credits"
+  },
+  "optimization_opportunities": [
+    {
+      "rank": 1,
+      "issue": "Materialize intermediate VIEW models as TABLES",
+      "expected_improvement": "25-35% runtime reduction"
+    },
+    {
+      "rank": 2,
+      "issue": "Consolidate multiple window functions into single pass",
+      "expected_improvement": "15-20% runtime reduction"
+    },
+    {
+      "rank": 3,
+      "issue": "Pre-aggregate attribution calculations",
+      "expected_improvement": "20-25% reduction"
+    },
+    {
+      "rank": 4,
+      "issue": "Flatten fund hierarchy (remove self-join traversal)",
+      "expected_improvement": "10-15% runtime reduction"
+    },
+    {
+      "rank": 5,
+      "issue": "Pre-join and cache benchmark date alignment",
+      "expected_improvement": "5-10% runtime reduction"
+    },
+    {
+      "rank": 6,
+      "issue": "Reduce from 20 models to ~12 via strategic consolidation",
+      "expected_improvement": "10-15% maintainability and execution"
+    }
+  ],
+  "status": "BASELINE"
+}

@@ -1,0 +1,71 @@
+---
+name: "Pipeline A - Simple Cashflow Analysis"
+version: "1.0"
+complexity_level: "SIMPLE"
+
+description: |
+  Simple 4-model pipeline for monthly cashflow aggregation and reporting.
+  Represents entry-level analytics use case with minimal complexity.
+  Typical of basic portfolio accounting and LP reporting workflows.
+
+business_purpose: |
+  Track and aggregate cashflow transactions (contributions, distributions, fees)
+  by portfolio and month. Used for:
+  - Monthly accounting close
+  - LP cash reporting
+  - Fund-level cashflow forecasting
+  - Portfolio valuation adjustments
+
+target_users:
+  - "Portfolio accountants"
+  - "LP reporting teams"
+  - "Fund finance analysts"
+
+---
+## MODELS (4 total)
+
+models:
+  staging:
+    - stg_cashflows (view)
+    - stg_portfolios (view)
+
+  marts:
+    - fact_cashflow_summary (table)
+    - report_monthly_cashflows (view)
+
+---
+## DATA VOLUME
+
+input_rows: 5022
+output_rows: 426
+compression_ratio: "92%"
+date_range: "2020-01-01 to 2024-12-31"
+
+---
+## COMPLEXITY METRICS
+
+num_models: 4
+num_joins: 1
+num_ctes: 4
+num_window_functions: 1
+num_subqueries: 0
+complexity_score: 5.5
+
+---
+## OPTIMIZATION OPPORTUNITIES
+
+opportunities:
+  - "Remove unnecessary DISTINCT in stg_cashflows"
+  - "Push date filters upstream before transformation"
+  - "Consolidate redundant date calculations (7 per row)"
+  - "Apply aggregation before JOIN instead of after"
+
+expected_runtime_reduction: "35%"
+expected_bytes_reduction: "40%"
+expected_credits_reduction: "35%"
+
+---
+## STATUS
+
+status: "ACTIVE"
+ready_for_benchmarking: true

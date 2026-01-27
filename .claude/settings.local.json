@@ -13,7 +13,10 @@
       "Bash(gh auth login:*)",
       "Bash(gh auth:*)",
       "Bash(git push)",
-      "Bash(bash:*)"
+      "Bash(bash:*)",
+      "Bash(wc:*)",
+      "Bash(xargs -I {} bash -c 'echo \"\"=== {} ===\"\" && head -3 {}')",
+      "Bash(find:*)"
     ]
   }
 }

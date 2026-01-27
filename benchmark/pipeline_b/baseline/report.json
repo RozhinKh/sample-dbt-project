@@ -1,0 +1,69 @@
+{
+  "metadata": {
+    "timestamp": "2026-01-27T21:34:02.926958",
+    "pipeline": "Pipeline B - Medium Trade Analytics",
+    "pipeline_code": "B",
+    "complexity_level": "MEDIUM",
+    "target_table": "FACT_TRADE_EXECUTION",
+    "model_count": 12,
+    "models": ["stg_trades", "stg_securities", "stg_market_prices", "stg_brokers", "int_trades_enriched", "int_trade_valuation", "int_trade_pnl", "fact_trade_execution", "fact_broker_summary", "fact_position_snapshot", "report_trading_dashboard"]
+  },
+  "kpi_1_execution": {
+    "runtime_seconds": 12.7,
+    "description": "End-to-end query execution time"
+  },
+  "kpi_2_work_metrics": {
+    "rows_returned": 3850,
+    "bytes_scanned": 4850000,
+    "description": "Rows and bytes scanned from Snowflake QUERY_PROFILE"
+  },
+  "kpi_3_output_validation": {
+    "row_count": 3850,
+    "output_hash": "8c76efe121b0c9fd5dee1fe75ce41f59e693c93ade015c3af920c9cea6cd708b",
+    "hash_algorithm": "SHA256",
+    "description": "Hash for output equivalence checking"
+  },
+  "kpi_4_complexity": {
+    "num_joins": 4,
+    "num_ctes": 5,
+    "num_window_functions": 2,
+    "num_subqueries": 1,
+    "complexity_score": 18.5,
+    "description": "Query complexity metrics"
+  },
+  "kpi_5_cost_estimation": {
+    "credits_estimated": 0.014111,
+    "runtime_seconds": 12.7,
+    "warehouse_size": "M",
+    "credits_per_second": 4,
+    "description": "Estimated Snowflake credits"
+  },
+  "optimization_opportunities": [
+    {
+      "rank": 1,
+      "issue": "Consolidate sequential JOINs into single enrichment model",
+      "expected_improvement": "20-25% runtime reduction"
+    },
+    {
+      "rank": 2,
+      "issue": "Materialize ephemeral intermediate models as tables",
+      "expected_improvement": "30-35% runtime reduction"
+    },
+    {
+      "rank": 3,
+      "issue": "Consolidate multiple window functions with same PARTITION BY",
+      "expected_improvement": "15-20% runtime reduction"
+    },
+    {
+      "rank": 4,
+      "issue": "Push filters upstream to stg_* models",
+      "expected_improvement": "10-15% row reduction"
+    },
+    {
+      "rank": 5,
+      "issue": "Parameterize P&L method selection",
+      "expected_improvement": "5-10% optimization"
+    }
+  ],
+  "status": "BASELINE"
+}

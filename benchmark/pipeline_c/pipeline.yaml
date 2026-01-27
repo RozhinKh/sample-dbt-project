@@ -1,0 +1,88 @@
+---
+name: "Pipeline C - Complex Portfolio Performance Analytics"
+version: "1.0"
+complexity_level: "COMPLEX"
+
+description: |
+  Complex 20-model pipeline for advanced performance attribution, risk metrics,
+  and benchmark comparison.
+
+business_purpose: |
+  Comprehensive portfolio performance analysis with advanced metrics for
+  Investment Committee (IC) reporting. Used for:
+  - Daily portfolio returns (Modified Dietz method)
+  - Risk metrics (Sharpe, Sortino, VaR, max drawdown, volatility)
+  - Benchmark comparison and outperformance analysis
+  - Performance attribution (position-level, sector-level, fund-level)
+  - Hierarchical fund aggregation
+  - IC quarterly reporting and LP communications
+
+---
+## MODELS (20+ total)
+
+models:
+  staging:
+    - stg_positions_daily (view)
+    - stg_valuations (view)
+    - stg_benchmarks (view)
+    - stg_benchmark_returns (view)
+    - stg_fund_hierarchy (view)
+    - stg_portfolio_benchmarks (view)
+
+  intermediate:
+    - int_portfolio_returns_daily (view)
+    - int_risk_metrics (view)
+    - int_benchmark_aligned (view)
+    - int_portfolio_vs_benchmark (view)
+    - int_position_attribution (view)
+    - int_sector_attribution (view)
+    - int_fund_rollup (view)
+
+  marts:
+    - fact_fund_summary (table)
+    - fact_portfolio_performance (table)
+    - fact_position_snapshot (table)
+    - fact_sector_performance (table)
+
+  reports:
+    - report_ic_dashboard (view)
+    - report_lp_quarterly (view)
+
+---
+## DATA VOLUME
+
+input_rows: 180
+intermediate_rows: "500-1000"
+output_rows: 18500
+date_range: "2022-01-01 to 2024-12-31"
+
+---
+## COMPLEXITY METRICS
+
+num_models: 20
+num_joins: 12
+num_ctes: 14
+num_window_functions: 8
+num_subqueries: 3
+complexity_score: 57.5
+
+---
+## OPTIMIZATION OPPORTUNITIES
+
+opportunities:
+  - "Materialize intermediate VIEW models as TABLES"
+  - "Consolidate multiple window functions into single pass"
+  - "Pre-aggregate attribution calculations"
+  - "Flatten fund hierarchy (remove self-join traversal)"
+  - "Pre-join and cache benchmark date alignment"
+  - "Reduce from 20 models to ~12 via strategic consolidation"
+
+expected_runtime_reduction: "58%"
+expected_bytes_reduction: "72%"
+expected_credits_reduction: "60%"
+
+---
+## STATUS
+
+status: "DISABLED"
+ready_for_benchmarking: true

@@ -1,0 +1,77 @@
+---
+name: "Pipeline B - Medium Trade Analytics"
+version: "1.0"
+complexity_level: "MEDIUM"
+
+description: |
+  Medium-complexity 12-model pipeline for trade execution, position tracking,
+  and P&L analysis.
+
+business_purpose: |
+  Track trade execution, calculate position-level P&L, and report broker performance.
+  Used for:
+  - Daily trade reconciliation
+  - Position tracking and monitoring
+  - P&L attribution by broker and security
+  - Trading performance dashboards
+  - Broker efficiency analysis
+
+---
+## MODELS (12 total)
+
+models:
+  staging:
+    - stg_trades (view)
+    - stg_securities (view)
+    - stg_market_prices (view)
+    - stg_brokers (view)
+
+  intermediate:
+    - int_trades_enriched (ephemeral)
+    - int_trade_valuation (ephemeral)
+    - int_trade_pnl (ephemeral)
+
+  marts:
+    - fact_trade_execution (table)
+    - fact_broker_summary (table)
+    - fact_position_snapshot (table)
+
+  reports:
+    - report_trading_dashboard (view)
+
+---
+## DATA VOLUME
+
+input_rows: 164
+output_rows: 3850
+date_range: "2023-01-01 to 2024-12-31"
+
+---
+## COMPLEXITY METRICS
+
+num_models: 12
+num_joins: 4
+num_ctes: 5
+num_window_functions: 2
+num_subqueries: 1
+complexity_score: 18.5
+
+---
+## OPTIMIZATION OPPORTUNITIES
+
+opportunities:
+  - "Consolidate sequential JOINs into single enrichment model"
+  - "Materialize ephemeral intermediate models as tables"
+  - "Consolidate multiple window functions with same PARTITION BY"
+  - "Push date and status filters upstream to stg_* models"
+  - "Parameterize P&L method selection with macro"
+
+expected_runtime_reduction: "42%"
+expected_bytes_reduction: "55%"
+expected_credits_reduction: "42%"
+
+---
+## STATUS
+
+status: "DISABLED"
+ready_for_benchmarking: true
