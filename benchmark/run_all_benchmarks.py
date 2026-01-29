@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Master Benchmark Runner - Runs all pipeline benchmarks and generates reports
-Runs: gen_report_a.py, gen_report_b.py, gen_report_c.py
+Runs: gen_report.py for all pipelines (a, b, c)
 Usage: python run_all_benchmarks.py
 """
 
@@ -14,15 +14,15 @@ if sys.platform == 'win32':
     import io
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-def run_pipeline_benchmark(script_name, pipeline_name):
-    """Run a single pipeline benchmark script"""
+def run_pipeline_benchmark(pipeline, pipeline_name):
+    """Run a single pipeline benchmark"""
     print(f"\n{'='*60}")
     print(f"Running {pipeline_name} Benchmark...")
     print(f"{'='*60}\n")
 
     try:
         result = subprocess.run(
-            ["python", script_name],
+            ["python", "gen_report.py", "--pipeline", pipeline],
             timeout=1200,  # 20 minutes timeout
             text=True
         )
@@ -47,9 +47,9 @@ print("RUNNING ALL PIPELINE BENCHMARKS")
 print("="*60)
 
 results = {
-    "Pipeline A": run_pipeline_benchmark("gen_report_a.py", "Pipeline A"),
-    "Pipeline B": run_pipeline_benchmark("gen_report_b.py", "Pipeline B"),
-    "Pipeline C": run_pipeline_benchmark("gen_report_c.py", "Pipeline C")
+    "Pipeline A": run_pipeline_benchmark("a", "Pipeline A"),
+    "Pipeline B": run_pipeline_benchmark("b", "Pipeline B"),
+    "Pipeline C": run_pipeline_benchmark("c", "Pipeline C")
 }
 
 # Summary
