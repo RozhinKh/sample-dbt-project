@@ -1,26 +1,16 @@
--- Pipeline A: Simple Cashflow Pipeline
--- Model: stg_portfolios
--- Description: Staging model for portfolio master data
---
--- ISSUES FOR ARTEMIS TO OPTIMIZE:
--- 1. Subquery for deduplication instead of QUALIFY
--- 2. Multiple passes over data
+-- Pipeline A: Staging Layer
+-- stg_portfolios.sql
+-- Purpose: Clean and standardize portfolio dimension data
+-- Models downstream: 1 (int_portfolio_attributes)
 
-with source as (
-    select
-        portfolio_id,
-        portfolio_name,
-        portfolio_type,
-        fund_id,
-        status,
-        aum_usd
-    from BAIN_ANALYTICS.DEV.sample_portfolios
-),
 
-active_only as (
-    select *
-    from source
-    where status = 'ACTIVE'
-)
 
-select * from active_only
+select
+    portfolio_id,
+    portfolio_name,
+    portfolio_type,
+    fund_id,
+    status,
+    current_timestamp() as dbt_loaded_at
+from BAIN_ANALYTICS.DEV.sample_portfolios
+where status = 'ACTIVE'

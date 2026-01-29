@@ -1,74 +1,94 @@
 {
   "metadata": {
-    "timestamp": "2026-01-27T21:34:02.926958",
-    "pipeline": "Pipeline C - Complex Portfolio Performance Analytics",
+    "timestamp": "2026-01-29T17:52:40.247430",
+    "pipeline": "Pipeline C - Portfolio Analytics",
     "pipeline_code": "C",
-    "complexity_level": "COMPLEX",
+    "complexity_level": "LARGE",
     "target_table": "FACT_PORTFOLIO_PERFORMANCE",
-    "model_count": 20,
-    "models": ["stg_positions_daily", "stg_valuations", "stg_benchmarks", "stg_benchmark_returns", "stg_fund_hierarchy", "stg_portfolio_benchmarks", "int_portfolio_returns_daily", "int_risk_metrics", "int_benchmark_aligned", "int_portfolio_vs_benchmark", "int_position_attribution", "int_sector_attribution", "int_fund_rollup", "fact_fund_summary", "fact_portfolio_performance", "fact_position_snapshot", "fact_sector_performance", "report_ic_dashboard", "report_lp_quarterly"]
+    "model_count": 26,
+    "models": [
+      "stg_positions_daily",
+      "stg_valuations",
+      "stg_benchmarks",
+      "stg_benchmark_returns",
+      "stg_portfolio_benchmarks",
+      "int_position_enriched",
+      "int_position_returns",
+      "int_portfolio_returns",
+      "int_sector_allocation",
+      "int_risk_metrics",
+      "int_portfolio_analysis_advanced",
+      "int_position_risk_decomposition",
+      "int_sector_rotation_analysis",
+      "int_performance_attribution_detailed",
+      "int_portfolio_drawdown",
+      "int_rolling_volatility",
+      "int_position_attribution",
+      "int_sector_performance_attribution",
+      "fact_portfolio_performance",
+      "fact_position_snapshot",
+      "fact_sector_performance",
+      "report_executive_summary",
+      "report_portfolio_risk_analysis",
+      "report_performance_drivers"
+    ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 48.3,
+    "runtime_seconds": 28.06,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
-    "rows_returned": 18500,
-    "bytes_scanned": 95000000,
+    "rows_returned": 66000,
+    "bytes_scanned": 10200000,
     "description": "Rows and bytes scanned from Snowflake QUERY_PROFILE"
   },
   "kpi_3_output_validation": {
-    "row_count": 18500,
-    "output_hash": "69b8ba545ae4bbeb471b5376e5140286609090abe4e817c085b14ea432b6d216",
+    "row_count": 66000,
+    "output_hash": "aeeff4321fa2f5743fd6e8f6ca9c02b81e8d73f6b04846b542a1a4c15c04d5cb",
     "hash_algorithm": "SHA256",
     "description": "Hash for output equivalence checking"
   },
   "kpi_4_complexity": {
-    "num_joins": 12,
-    "num_ctes": 14,
-    "num_window_functions": 8,
-    "num_subqueries": 3,
-    "complexity_score": 57.5,
+    "num_joins": 18,
+    "num_ctes": 35,
+    "num_window_functions": 12,
+    "num_subqueries": 8,
+    "complexity_score": 42.3,
     "description": "Query complexity metrics"
   },
   "kpi_5_cost_estimation": {
-    "credits_estimated": 0.107333,
-    "runtime_seconds": 48.3,
-    "warehouse_size": "L",
-    "credits_per_second": 8,
+    "credits_estimated": 0.11224,
+    "runtime_seconds": 28.06,
+    "warehouse_size": "M",
+    "credits_per_second": 4,
     "description": "Estimated Snowflake credits"
   },
   "optimization_opportunities": [
     {
       "rank": 1,
-      "issue": "Materialize intermediate VIEW models as TABLES",
-      "expected_improvement": "25-35% runtime reduction"
-    },
-    {
-      "rank": 2,
-      "issue": "Consolidate multiple window functions into single pass",
+      "issue": "Cache benchmark returns in separate table",
       "expected_improvement": "15-20% runtime reduction"
     },
     {
+      "rank": 2,
+      "issue": "Materialize int_portfolio_returns as incremental",
+      "expected_improvement": "30-40% computation savings"
+    },
+    {
       "rank": 3,
-      "issue": "Pre-aggregate attribution calculations",
-      "expected_improvement": "20-25% reduction"
+      "issue": "Pre-aggregate position metrics before attribution",
+      "expected_improvement": "20-25% row reduction"
     },
     {
       "rank": 4,
-      "issue": "Flatten fund hierarchy (remove self-join traversal)",
-      "expected_improvement": "10-15% runtime reduction"
+      "issue": "Vectorize rolling volatility calculations",
+      "expected_improvement": "40-50% window function performance"
     },
     {
       "rank": 5,
-      "issue": "Pre-join and cache benchmark date alignment",
-      "expected_improvement": "5-10% runtime reduction"
-    },
-    {
-      "rank": 6,
-      "issue": "Reduce from 20 models to ~12 via strategic consolidation",
-      "expected_improvement": "10-15% maintainability and execution"
+      "issue": "Partition benchmark data by asset class",
+      "expected_improvement": "25-35% sector attribution speedup"
     }
   ],
-  "status": "BASELINE"
+  "status": "CANDIDATE"
 }

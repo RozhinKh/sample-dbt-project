@@ -1,39 +1,46 @@
 {
   "metadata": {
-    "timestamp": "2026-01-27T21:34:02.915358",
-    "pipeline": "Pipeline A - Simple Cashflow Analysis",
+    "timestamp": "2026-01-29T17:58:10.386841",
+    "pipeline": "Pipeline A - Cashflow Analytics",
     "pipeline_code": "A",
-    "complexity_level": "SIMPLE",
+    "complexity_level": "LOW",
     "target_table": "FACT_CASHFLOW_SUMMARY",
-    "model_count": 4,
-    "models": ["stg_cashflows", "stg_portfolios", "fact_cashflow_summary", "report_monthly_cashflows"]
+    "model_count": 6,
+    "models": [
+      "stg_cashflows",
+      "stg_portfolios",
+      "int_portfolio_cashflows",
+      "fact_cashflow_summary",
+      "report_monthly_cashflows",
+      "report_cashflow_analysis"
+    ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 3.2,
+    "runtime_seconds": 10.44,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
-    "rows_returned": 426,
-    "bytes_scanned": 512000,
+    "rows_returned": 7000,
+    "bytes_scanned": 1400000,
     "description": "Rows and bytes scanned from Snowflake QUERY_PROFILE"
   },
   "kpi_3_output_validation": {
-    "row_count": 426,
-    "output_hash": "5c66064a4479f0b58592299bbac97cffbb8cbb0813cfaa6fd3c7bbb09858272f",
+    "row_count": 7000,
+    "output_hash": "b8f3959f562460c47dfff9211e104fe8212b5f0161fe55b1db80a573bf6d303b",
     "hash_algorithm": "SHA256",
     "description": "Hash for output equivalence checking"
   },
   "kpi_4_complexity": {
-    "num_joins": 1,
-    "num_ctes": 4,
+    "num_joins": 2,
+    "num_ctes": 5,
     "num_window_functions": 1,
-    "num_subqueries": 0,
-    "complexity_score": 5.5,
+    "num_subqueries": 1,
+    "complexity_score": 8.3,
     "description": "Query complexity metrics"
   },
   "kpi_5_cost_estimation": {
-    "credits_estimated": 0.003556,
-    "runtime_seconds": 3.2,
+    "credits_estimated": 0.04176,
+    "runtime_seconds": 10.44,
     "warehouse_size": "M",
     "credits_per_second": 4,
     "description": "Estimated Snowflake credits"
@@ -41,24 +48,14 @@
   "optimization_opportunities": [
     {
       "rank": 1,
-      "issue": "Remove unnecessary DISTINCT in stg_cashflows",
-      "expected_improvement": "5-10% runtime reduction"
+      "issue": "Materialize stg_cashflows as incremental model",
+      "expected_improvement": "15-20% runtime reduction"
     },
     {
       "rank": 2,
-      "issue": "Push date filters upstream before transformation",
-      "expected_improvement": "15-20% row reduction"
-    },
-    {
-      "rank": 3,
-      "issue": "Consolidate 7 date calculations into 1-2 expressions",
-      "expected_improvement": "10-15% runtime reduction"
-    },
-    {
-      "rank": 4,
-      "issue": "Apply aggregation before JOIN instead of after",
-      "expected_improvement": "20-30% row reduction"
+      "issue": "Add partition on cashflow_month in fact table",
+      "expected_improvement": "20-25% query improvement"
     }
   ],
-  "status": "BASELINE"
+  "status": "CANDIDATE"
 }

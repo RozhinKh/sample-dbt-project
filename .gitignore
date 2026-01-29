@@ -1,0 +1,26 @@
+# dbt artifacts
+target/
+dbt_packages/
+
+# Logs
+logs/
+
+# Claude Code
+.claude/
+
+# System
+nul
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.env
+.env.local

@@ -28,30 +28,43 @@ seeds:
 
 models:
   bain_capital_portfolio_analytics:
-    # Pipeline A: Simple cashflow pipeline
+    # Pipeline A - Simple Cashflow Analysis
     pipeline_a:
       staging:
         +materialized: view
+        +tags: ["staging", "pipeline_a"]
+      intermediate:
+        +materialized: view
+        +tags: ["intermediate", "pipeline_a"]
       marts:
         +materialized: table
+        +tags: ["marts", "pipeline_a"]
 
-    # Pipeline B: Medium complexity trade analytics
+    # Pipeline B - Medium Trade Analytics
     pipeline_b:
       staging:
         +materialized: view
+        +tags: ["staging", "pipeline_b"]
       intermediate:
-        +materialized: ephemeral
+        +materialized: view
+        +tags: ["intermediate", "pipeline_b"]
       marts:
         +materialized: table
-        +enabled: false
+        +tags: ["marts", "pipeline_b"]
 
-    # Pipeline C: Complex portfolio analytics
+    # Pipeline C - Complex Portfolio Performance Analytics
     pipeline_c:
       staging:
         +materialized: view
+        +tags: ["staging", "pipeline_c"]
       intermediate:
         +materialized: view
-        +enabled: false
+        +tags: ["intermediate", "pipeline_c"]
       marts:
         +materialized: table
-        +enabled: false
+        +tags: ["marts", "pipeline_c"]
+
+    # Utilities: Shared macros and helper functions
+    utilities:
+      +materialized: view
+      +tags: ["utilities"]

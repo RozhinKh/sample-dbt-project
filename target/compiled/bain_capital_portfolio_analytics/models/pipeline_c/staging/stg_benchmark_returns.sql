@@ -1,50 +1,11 @@
--- Pipeline C: Complex Portfolio Analytics
--- Model: stg_benchmark_returns
--- Description: Daily benchmark return data
---
--- ISSUES FOR ARTEMIS TO OPTIMIZE:
--- 1. Self-join for cumulative returns (inefficient)
--- 2. Multiple window functions
+-- Pipeline C: Staging Layer
+-- stg_benchmark_returns.sql
 
-with source as (
-    select
-        'BM' || lpad(benchmark_id, 3, '0') as benchmark_id,
-        return_date,
-        daily_return,
-        created_at
-    from BAIN_ANALYTICS.DEV.sample_benchmark_returns
-    where return_date >= '2020-01-01'
-),
 
--- ISSUE: Multiple window functions that could be consolidated
-with_cumulative as (
-    select
-        benchmark_id,
-        return_date,
-        daily_return,
-        -- ISSUE: Separate window functions for each period
-        exp(sum(ln(1 + daily_return)) over (
-            partition by benchmark_id
-            order by return_date
-            rows between unbounded preceding and current row
-        )) - 1 as cumulative_return,
-        exp(sum(ln(1 + daily_return)) over (
-            partition by benchmark_id
-            order by return_date
-            rows between 29 preceding and current row
-        )) - 1 as return_30d,
-        exp(sum(ln(1 + daily_return)) over (
-            partition by benchmark_id
-            order by return_date
-            rows between 89 preceding and current row
-        )) - 1 as return_90d,
-        stddev(daily_return) over (
-            partition by benchmark_id
-            order by return_date
-            rows between 251 preceding and current row
-        ) * sqrt(252) as annualized_volatility,
-        created_at
-    from source
-)
 
-select * from with_cumulative
+select
+    benchmark_id,
+    return_date,
+    daily_return,
+    current_timestamp() as dbt_loaded_at
+from BAIN_ANALYTICS.DEV.sample_benchmark_returns

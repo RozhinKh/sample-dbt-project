@@ -5,91 +5,52 @@
   
   
   as (
-    -- Pipeline C: Complex Portfolio Analytics
--- Model: int_portfolio_vs_benchmark
--- Description: Compare portfolio returns to benchmark
---
--- ISSUES FOR ARTEMIS TO OPTIMIZE:
--- 1. Re-joins data that could be joined once upstream
--- 2. Excess return calculation repeated
--- 3. Complex rolling calculations
+    -- Pipeline C: Intermediate Layer
+-- int_portfolio_vs_benchmark.sql
+-- Purpose: Compare portfolio performance against benchmarks
 
-with portfolio_returns as (
-    select * from BAIN_ANALYTICS.DEV.int_portfolio_returns_daily
+
+
+with port_perf as (
+    select * from BAIN_ANALYTICS.DEV.int_portfolio_returns
 ),
 
-benchmark_aligned as (
-    select * from BAIN_ANALYTICS.DEV.int_benchmark_aligned
-    where is_primary = true
-),
-
--- ISSUE: Another join that combines already-processed data
-combined as (
+bench_perf as (
     select
-        pr.portfolio_id,
-        pr.valuation_date,
-        pr.nav,
-        pr.nav_usd,
-        pr.daily_return_mod_dietz as portfolio_daily_return,
-        pr.cumulative_return as portfolio_cumulative_return,
-        pr.return_1m as portfolio_return_1m,
-        pr.return_3m as portfolio_return_3m,
-        pr.return_1y as portfolio_return_1y,
-        pr.volatility_1y as portfolio_volatility,
-        ba.benchmark_id,
-        ba.benchmark_daily_return,
-        ba.benchmark_cumulative_return,
-        ba.benchmark_return_30d as benchmark_return_1m,
-        ba.benchmark_return_90d as benchmark_return_3m,
-        ba.benchmark_return_1y,
-        ba.benchmark_volatility
-    from portfolio_returns pr
-    left join benchmark_aligned ba
-        on pr.portfolio_id = ba.portfolio_id
-        and pr.valuation_date = ba.valuation_date
+        benchmark_id,
+        valuation_date,
+        benchmark_return_pct
+    from BAIN_ANALYTICS.DEV.stg_benchmark_returns
 ),
 
--- ISSUE: Excess return calculations
-with_excess as (
+port_bench_map as (
     select
-        *,
-        portfolio_daily_return - coalesce(benchmark_daily_return, 0) as daily_excess_return,
-        portfolio_cumulative_return - coalesce(benchmark_cumulative_return, 0) as cumulative_excess_return,
-        portfolio_return_1m - coalesce(benchmark_return_1m, 0) as excess_return_1m,
-        portfolio_return_3m - coalesce(benchmark_return_3m, 0) as excess_return_3m,
-        portfolio_return_1y - coalesce(benchmark_return_1y, 0) as excess_return_1y
-    from combined
-),
-
--- ISSUE: Rolling tracking error calculation
-with_tracking_error as (
-    select
-        *,
-        stddev(daily_excess_return) over (
-            partition by portfolio_id
-            order by valuation_date
-            rows between 251 preceding and current row
-        ) * sqrt(252) as tracking_error_1y,
-        avg(daily_excess_return) over (
-            partition by portfolio_id
-            order by valuation_date
-            rows between 251 preceding and current row
-        ) * 252 as annualized_alpha
-    from with_excess
-),
-
--- ISSUE: Information ratio
-final as (
-    select
-        *,
-        case
-            when tracking_error_1y > 0
-            then annualized_alpha / tracking_error_1y
-            else null
-        end as information_ratio
-    from with_tracking_error
+        portfolio_id,
+        benchmark_id,
+        valuation_date
+    from BAIN_ANALYTICS.DEV.stg_portfolio_benchmarks
 )
 
-select * from final
+select
+    pp.portfolio_id,
+    pp.valuation_date,
+    pp.nav_usd as portfolio_nav,
+    pp.daily_return_pct as portfolio_return_pct,
+    bp.benchmark_return_pct,
+    round(pp.daily_return_pct - bp.benchmark_return_pct, 8) as excess_return_pct,
+    round(100 * (pp.daily_return_pct - bp.benchmark_return_pct), 4) as excess_return_bps,
+    case
+        when pp.daily_return_pct > bp.benchmark_return_pct then 'OUTPERFORM'
+        when pp.daily_return_pct < bp.benchmark_return_pct then 'UNDERPERFORM'
+        else 'IN_LINE'
+    end as performance_vs_benchmark,
+    pbm.benchmark_id
+from port_perf pp
+left join port_bench_map pbm
+    on pp.portfolio_id = pbm.portfolio_id
+    and pp.valuation_date = pbm.valuation_date
+left join bench_perf bp
+    on pbm.benchmark_id = bp.benchmark_id
+    and pp.valuation_date = bp.valuation_date
   );
 
