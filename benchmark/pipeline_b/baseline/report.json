@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-29T17:51:30.805982",
+    "timestamp": "2026-01-30T01:57:04.746141",
     "pipeline": "Pipeline B - Trading Analytics",
     "pipeline_code": "B",
     "complexity_level": "MEDIUM",
@@ -22,7 +22,7 @@
     ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 16.57,
+    "runtime_seconds": 22.21,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
@@ -32,7 +32,7 @@
   },
   "kpi_3_output_validation": {
     "row_count": 21000,
-    "output_hash": "044c4844732bc6b42a8fa89476aa80696d765e2e7cc49f57a62e0fb6d2789ccc",
+    "output_hash": "36cf307d6e5b03376cb79ad250fa0ebb700359b1b8260906fa2388d414184064",
     "hash_algorithm": "SHA256",
     "description": "Hash for output equivalence checking"
   },
@@ -45,8 +45,8 @@
     "description": "Query complexity metrics"
   },
   "kpi_5_cost_estimation": {
-    "credits_estimated": 0.06628,
-    "runtime_seconds": 16.57,
+    "credits_estimated": 0.08884,
+    "runtime_seconds": 22.21,
     "warehouse_size": "M",
     "credits_per_second": 4,
     "description": "Estimated Snowflake credits"
