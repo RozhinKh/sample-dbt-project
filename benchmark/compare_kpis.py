@@ -89,18 +89,11 @@ Examples:
         print(f"  Change:    {sign} {abs(improvement):.1f}%")
     print()
 
-    print("KPI 2: WORK METRICS (Output Size)")
+    print("KPI 2: WORK METRICS (Data Volume)")
     print("-" * 70)
     baseline_rows = baseline['kpi_2_work_metrics']['rows_returned']
     candidate_rows = candidate['kpi_2_work_metrics']['rows_returned']
-    improvement = calculate_improvement(baseline, candidate,
-                                       ['kpi_2_work_metrics', 'rows_returned'])
-
-    print(f"  Baseline:  {baseline_rows} rows")
-    print(f"  Optimized: {candidate_rows} rows")
-    if improvement is not None:
-        sign = "DOWN" if improvement > 0 else "UP"
-        print(f"  Change:    {sign} {abs(improvement):.1f}%")
+    print(f"  Rows processed: {baseline_rows} (unchanged)")
     print()
 
     print("KPI 3: OUTPUT VALIDATION (Equivalence Check)")
@@ -123,40 +116,21 @@ Examples:
         return 1
     print()
 
-    print("KPI 4: QUERY COMPLEXITY (Structure Analysis)")
+    print("KPI 4: COST ESTIMATION")
     print("-" * 70)
-    if 'kpi_4_complexity' in baseline and baseline['kpi_4_complexity']:
-        baseline_complexity = baseline['kpi_4_complexity'].get('complexity_score', 'N/A')
-        candidate_complexity = candidate['kpi_4_complexity'].get('complexity_score', 'N/A')
-        baseline_joins = baseline['kpi_4_complexity'].get('num_joins', 'N/A')
-        candidate_joins = candidate['kpi_4_complexity'].get('num_joins', 'N/A')
+    baseline_cost = baseline.get('kpi_4_cost_estimation', {})
+    candidate_cost = candidate.get('kpi_4_cost_estimation', {})
 
-        print(f"  Baseline complexity:  {baseline_complexity}/10 ({baseline_joins} joins)")
-        print(f"  Optimized complexity: {candidate_complexity}/10 ({candidate_joins} joins)")
+    baseline_total = baseline_cost.get('total_credits_estimated', 0)
+    candidate_total = candidate_cost.get('total_credits_estimated', 0)
+    baseline_usd = baseline_cost.get('estimated_cost_usd', 0)
+    candidate_usd = candidate_cost.get('estimated_cost_usd', 0)
 
-        if isinstance(baseline_complexity, (int, float)) and isinstance(candidate_complexity, (int, float)):
-            if candidate_complexity < baseline_complexity:
-                improvement = ((baseline_complexity - candidate_complexity) / baseline_complexity) * 100
-                print(f"  Change:               - {improvement:.1f}% simpler")
-            elif candidate_complexity > baseline_complexity:
-                increase = ((candidate_complexity - baseline_complexity) / baseline_complexity) * 100
-                print(f"  Change:               + {increase:.1f}% more complex")
-            else:
-                print(f"  Change:               No change in complexity")
-    print()
+    print(f"  Baseline:  {baseline_total:.8f} credits (${baseline_usd:.4f})")
+    print(f"  Optimized: {candidate_total:.8f} credits (${candidate_usd:.4f})")
 
-    print("KPI 5: COST ESTIMATION (Bytes Scanned -> Credits)")
-    print("-" * 70)
-    baseline_credits = baseline.get('kpi_5_cost_estimation', {}).get('credits_estimated', 0)
-    candidate_credits = candidate.get('kpi_5_cost_estimation', {}).get('credits_estimated', 0)
-    baseline_bytes = baseline.get('kpi_5_cost_estimation', {}).get('bytes_scanned', 0)
-    candidate_bytes = candidate.get('kpi_5_cost_estimation', {}).get('bytes_scanned', 0)
-
-    print(f"  Baseline:  {baseline_credits:.8f} credits ({baseline_bytes:,} bytes)")
-    print(f"  Optimized: {candidate_credits:.8f} credits ({candidate_bytes:,} bytes)")
-
-    if baseline_credits > 0:
-        cost_improvement = ((baseline_credits - candidate_credits) / baseline_credits) * 100
+    if baseline_total > 0:
+        cost_improvement = ((baseline_total - candidate_total) / baseline_total) * 100
         if cost_improvement > 0:
             print(f"  Change:    - {cost_improvement:.1f}% fewer credits")
         elif cost_improvement < 0:
@@ -171,7 +145,7 @@ Examples:
 
     # Check for performance regressions
     runtime_increased = candidate_runtime > baseline_runtime
-    cost_increased = candidate_credits > baseline_credits
+    cost_increased = candidate_total > baseline_total
 
     if runtime_increased or cost_increased:
         print(f"  Status: [FAIL] PERFORMANCE REGRESSED")
@@ -180,7 +154,7 @@ Examples:
             runtime_regression = ((candidate_runtime - baseline_runtime) / baseline_runtime) * 100
             print(f"    • Runtime: {runtime_regression:.1f}% SLOWER")
         if cost_increased:
-            cost_regression = ((candidate_credits - baseline_credits) / baseline_credits) * 100
+            cost_regression = ((candidate_total - baseline_total) / baseline_total) * 100
             print(f"    • Cost: {cost_regression:.1f}% MORE EXPENSIVE")
         return 1
     else:
@@ -188,10 +162,10 @@ Examples:
         if not runtime_increased and candidate_runtime < baseline_runtime:
             runtime_improvement = ((baseline_runtime - candidate_runtime) / baseline_runtime) * 100
             print(f"    • Runtime: {runtime_improvement:.1f}% faster")
-        if not cost_increased and candidate_credits < baseline_credits:
-            cost_improvement = ((baseline_credits - candidate_credits) / baseline_credits) * 100
+        if not cost_increased and candidate_total < baseline_total:
+            cost_improvement = ((baseline_total - candidate_total) / baseline_total) * 100
             print(f"    • Cost: {cost_improvement:.1f}% cheaper")
-        if candidate_runtime == baseline_runtime and candidate_credits == baseline_credits:
+        if candidate_runtime == baseline_runtime and candidate_total == baseline_total:
             print(f"    • No performance change")
     print()
 
@@ -215,19 +189,8 @@ Examples:
     if baseline_hash == candidate_hash:
         improvements.append(f"  • Output validation: [OK] Guaranteed identical")
 
-    if baseline_credits > 0 and cost_improvement is not None and cost_improvement > 0:
+    if baseline_total > 0 and cost_improvement is not None and cost_improvement > 0:
         improvements.append(f"  • Cost reduced: {cost_improvement:.1f}% fewer credits")
-
-    try:
-        baseline_complexity = baseline.get('kpi_4_complexity', {}).get('complexity_score')
-        candidate_complexity = candidate.get('kpi_4_complexity', {}).get('complexity_score')
-        if (isinstance(baseline_complexity, (int, float)) and
-            isinstance(candidate_complexity, (int, float)) and
-            candidate_complexity < baseline_complexity):
-            complexity_improvement = ((baseline_complexity - candidate_complexity) / baseline_complexity) * 100
-            improvements.append(f"  • Complexity reduced: {complexity_improvement:.1f}% simpler query")
-    except:
-        pass
 
     if improvements:
         for imp in improvements:

@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-30T02:41:05.282967",
+    "timestamp": "2026-02-04T02:13:00.830794",
     "pipeline": "Pipeline A - Cashflow Analytics",
     "pipeline_code": "A",
     "complexity_level": "LOW",
@@ -14,7 +14,7 @@
     ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 13.95,
+    "runtime_seconds": 12.12,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
@@ -28,32 +28,10 @@
     "hash_algorithm": "SHA256",
     "description": "Hash for output equivalence checking"
   },
-  "kpi_4_complexity": {
-    "num_joins": 2,
-    "num_ctes": 5,
-    "num_window_functions": 1,
-    "num_subqueries": 1,
-    "complexity_score": 8.3,
-    "description": "Query complexity metrics"
+  "kpi_4_cost_estimation": {
+    "total_credits_estimated": 0.01347,
+    "estimated_cost_usd": 0.0269,
+    "description": "Official Snowflake formula: (runtime_seconds / 3600) * 4 credits_per_hour"
   },
-  "kpi_5_cost_estimation": {
-    "credits_estimated": 0.0558,
-    "runtime_seconds": 13.95,
-    "warehouse_size": "M",
-    "credits_per_second": 4,
-    "description": "Estimated Snowflake credits"
-  },
-  "optimization_opportunities": [
-    {
-      "rank": 1,
-      "issue": "Materialize stg_cashflows as incremental model",
-      "expected_improvement": "15-20% runtime reduction"
-    },
-    {
-      "rank": 2,
-      "issue": "Add partition on cashflow_month in fact table",
-      "expected_improvement": "20-25% query improvement"
-    }
-  ],
-  "status": "CANDIDATE"
+  "status": "REPORT"
 }

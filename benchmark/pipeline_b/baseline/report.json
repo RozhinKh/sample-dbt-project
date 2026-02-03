@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-30T01:57:04.746141",
+    "timestamp": "2026-02-04T02:15:08.312146",
     "pipeline": "Pipeline B - Trading Analytics",
     "pipeline_code": "B",
     "complexity_level": "MEDIUM",
@@ -22,7 +22,7 @@
     ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 22.21,
+    "runtime_seconds": 21.05,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
@@ -36,42 +36,10 @@
     "hash_algorithm": "SHA256",
     "description": "Hash for output equivalence checking"
   },
-  "kpi_4_complexity": {
-    "num_joins": 8,
-    "num_ctes": 15,
-    "num_window_functions": 5,
-    "num_subqueries": 3,
-    "complexity_score": 18.5,
-    "description": "Query complexity metrics"
+  "kpi_4_cost_estimation": {
+    "total_credits_estimated": 0.02339,
+    "estimated_cost_usd": 0.0468,
+    "description": "Official Snowflake formula: (runtime_seconds / 3600) * 4 credits_per_hour"
   },
-  "kpi_5_cost_estimation": {
-    "credits_estimated": 0.08884,
-    "runtime_seconds": 22.21,
-    "warehouse_size": "M",
-    "credits_per_second": 4,
-    "description": "Estimated Snowflake credits"
-  },
-  "optimization_opportunities": [
-    {
-      "rank": 1,
-      "issue": "Add index on security_id in stg_trades",
-      "expected_improvement": "10-15% join performance"
-    },
-    {
-      "rank": 2,
-      "issue": "Materialize int_trades_enriched as incremental model",
-      "expected_improvement": "20-30% runtime reduction"
-    },
-    {
-      "rank": 3,
-      "issue": "Pre-aggregate broker metrics before fact table join",
-      "expected_improvement": "15-20% row reduction"
-    },
-    {
-      "rank": 4,
-      "issue": "Push date filters to staging layer",
-      "expected_improvement": "25-30% overall improvement"
-    }
-  ],
-  "status": "CANDIDATE"
+  "status": "REPORT"
 }

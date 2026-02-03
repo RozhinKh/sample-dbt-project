@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2026-01-30T02:26:04.104209",
+    "timestamp": "2026-02-04T01:38:14.129278",
     "pipeline": "Pipeline C - Portfolio Analytics",
     "pipeline_code": "C",
     "complexity_level": "LARGE",
@@ -34,7 +34,7 @@
     ]
   },
   "kpi_1_execution": {
-    "runtime_seconds": 35.83,
+    "runtime_seconds": 36.61,
     "description": "End-to-end query execution time"
   },
   "kpi_2_work_metrics": {
@@ -53,42 +53,12 @@
     "num_ctes": 35,
     "num_window_functions": 12,
     "num_subqueries": 8,
-    "complexity_score": 42.3,
-    "description": "Query complexity metrics"
+    "description": "Query complexity metrics (dynamically calculated from SQL)"
   },
   "kpi_5_cost_estimation": {
-    "credits_estimated": 0.14332,
-    "runtime_seconds": 35.83,
-    "warehouse_size": "M",
-    "credits_per_second": 4,
-    "description": "Estimated Snowflake credits"
+    "total_credits_estimated": 0.04068,
+    "estimated_cost_usd": 0.0814,
+    "description": "Official Snowflake formula: (runtime_seconds / 3600) * 4 credits_per_hour"
   },
-  "optimization_opportunities": [
-    {
-      "rank": 1,
-      "issue": "Cache benchmark returns in separate table",
-      "expected_improvement": "15-20% runtime reduction"
-    },
-    {
-      "rank": 2,
-      "issue": "Materialize int_portfolio_returns as incremental",
-      "expected_improvement": "30-40% computation savings"
-    },
-    {
-      "rank": 3,
-      "issue": "Pre-aggregate position metrics before attribution",
-      "expected_improvement": "20-25% row reduction"
-    },
-    {
-      "rank": 4,
-      "issue": "Vectorize rolling volatility calculations",
-      "expected_improvement": "40-50% window function performance"
-    },
-    {
-      "rank": 5,
-      "issue": "Partition benchmark data by asset class",
-      "expected_improvement": "25-35% sector attribution speedup"
-    }
-  ],
-  "status": "CANDIDATE"
+  "status": "REPORT"
 }
