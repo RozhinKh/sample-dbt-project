@@ -14,7 +14,7 @@ with enriched as (
     select * from BAIN_ANALYTICS.DEV.int_position_enriched
 ),
 
-cast_enriched as (
+lagged_position_values as (
     select
         position_id,
         portfolio_id,
@@ -25,7 +25,8 @@ cast_enriched as (
         ticker,
         security_name,
         asset_class,
-        sector
+        sector,
+        lag(market_value_usd) over (partition by security_id order by position_date) as prev_value
     from enriched
 ),
 
@@ -41,14 +42,14 @@ returns as (
         security_name,
         asset_class,
         sector,
-        lag(market_value_usd) over (partition by security_id order by position_date) as prev_value,
-        market_value_usd - lag(market_value_usd) over (partition by security_id order by position_date) as daily_pnl,
+        prev_value,
+        market_value_usd - prev_value as daily_pnl,
         case
-            when lag(market_value_usd) over (partition by security_id order by position_date) > 0
-            then (market_value_usd - lag(market_value_usd) over (partition by security_id order by position_date)) / lag(market_value_usd) over (partition by security_id order by position_date)
+            when prev_value > 0
+            then (market_value_usd - prev_value) / prev_value
             else 0
         end as daily_return_pct
-    from cast_enriched
+    from lagged_position_values
 )
 
 select * from returns

@@ -14,25 +14,15 @@ with enriched as (
     select * from BAIN_ANALYTICS.DEV.int_position_enriched
 ),
 
-cast_enriched as (
-    select
-        portfolio_id,
-        position_date,
-        sector,
-        cast(quantity as numeric(18, 2)) as quantity,
-        cast(market_value_usd as numeric(18, 2)) as market_value_usd
-    from enriched
-),
-
 sector_totals as (
     select
         portfolio_id,
         position_date,
         sector,
         count(*) as position_count,
-        sum(market_value_usd) as sector_value,
-        sum(quantity) as total_quantity
-    from cast_enriched
+        sum(cast(market_value_usd as numeric(18, 2))) as sector_value,
+        sum(cast(quantity as numeric(18, 2))) as total_quantity
+    from enriched
     group by portfolio_id, position_date, sector
 ),
 
@@ -40,8 +30,8 @@ portfolio_totals as (
     select
         portfolio_id,
         position_date,
-        sum(market_value_usd) as portfolio_value
-    from cast_enriched
+        sum(cast(market_value_usd as numeric(18, 2))) as portfolio_value
+    from enriched
     group by portfolio_id, position_date
 )
 

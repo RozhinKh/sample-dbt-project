@@ -13,12 +13,8 @@ create or replace transient table BAIN_ANALYTICS.DEV.int_cashflow_aggregated
 
 
 
-with cashflows as (
-    select * from BAIN_ANALYTICS.DEV.stg_cashflows
-),
-
 -- Pre-aggregate at source to reduce rows before fact table join
-monthly_aggregated as (
+with monthly_aggregated as (
     select
         portfolio_id,
         date_trunc('month', cashflow_date) as cashflow_month,
@@ -29,7 +25,7 @@ monthly_aggregated as (
         avg(amount) as avg_amount,
         min(amount) as min_amount,
         max(amount) as max_amount
-    from cashflows
+    from BAIN_ANALYTICS.DEV.stg_cashflows
     group by portfolio_id, date_trunc('month', cashflow_date), cashflow_type, currency
 )
 
