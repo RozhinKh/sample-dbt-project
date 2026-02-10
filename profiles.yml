@@ -1,15 +1,15 @@
 # dbt profiles configuration for Snowflake
-# This file uses environment variables for credentials
+# Uses hardcoded values for Artemis runner compatibility
 bain_capital:
   target: dev
   outputs:
     dev:
       type: snowflake
-      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
-      user: "{{ env_var('SNOWFLAKE_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
-      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
-      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+      account: GWAYEQA-CEB31664
+      user: AWENDELA
+      password: Xarsedasdvp1!1
+      database: BAIN_ANALYTICS
+      warehouse: COMPUTE_WH
+      schema: DEV
       threads: 4
       client_session_keep_alive: False
