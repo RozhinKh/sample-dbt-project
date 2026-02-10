@@ -1,15 +1,15 @@
 # dbt profiles configuration for Snowflake
-# Uses environment variables (set via export commands)
+# Uses environment variables with fallback defaults
 bain_capital:
   target: dev
   outputs:
     dev:
       type: snowflake
-      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
-      user: "{{ env_var('SNOWFLAKE_USER') }}"
-      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
-      database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
-      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
-      schema: "{{ env_var('SNOWFLAKE_SCHEMA') }}"
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT', 'GWAYEQA-CEB31664') }}"
+      user: "{{ env_var('SNOWFLAKE_USER', 'AWENDELA') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD', 'Xarsedasdvp1!1') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'BAIN_ANALYTICS') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'DEV') }}"
       threads: 4
       client_session_keep_alive: False
