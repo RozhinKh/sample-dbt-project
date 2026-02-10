@@ -1,6 +1,15 @@
 ---
 # Artemis Custom Runner Configuration
-# For dbt SQL Optimization Benchmarking
+# For dbt SQL Optimization Benchmarking with Modular Report Generation
+#
+# WORKFLOW PHASES:
+# Phase 1: BASELINE GENERATION - Runs current SQL via dbt and generates baseline reports using generate_report.py
+# Phase 2: OPTIMIZATION - (Manual step) Optimize SQL queries in dbt models
+# Phase 3: CANDIDATE GENERATION - Re-runs optimized SQL and generates candidate reports using generate_report.py
+# Phase 4: AUTO-COMPARISON - Automatically compares baseline vs candidate using compare.py with recommendations
+#
+# The generate_report.py script replaces the legacy extract_report.py with modular report generation.
+# The compare.py script provides comprehensive baseline vs candidate comparison with analysis output.
 
 name: "dbt-sql-optimization-benchmarking"
 version: "1.0"
@@ -42,10 +51,13 @@ build:
       on_failure: "warn"
 
 # Benchmarking configuration
+# Phase 1 & 3: Baseline and Candidate Generation using generate_report.py
+# Phase 4: Auto-Comparison using compare.py
 benchmark:
   enabled: true
 
-  # Baseline generation (current state)
+  # PHASE 1: Baseline generation (current state)
+  # Runs current SQL and generates baseline reports
   baseline:
     - name: "baseline-pipeline-a"
       steps:
@@ -56,8 +68,8 @@ benchmark:
           description: "Run Pipeline A (Simple)"
           timeout: 600
 
-        - command: "python extract_report.py --pipeline a"
-          description: "Extract baseline KPI metrics for Pipeline A"
+        - command: "python benchmark/generate_report.py --pipeline a"
+          description: "Generate baseline KPI metrics for Pipeline A using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_a/baseline/report.json"
@@ -74,8 +86,8 @@ benchmark:
           description: "Run Pipeline B (Medium)"
           timeout: 600
 
-        - command: "python extract_report.py --pipeline b"
-          description: "Extract baseline KPI metrics for Pipeline B"
+        - command: "python benchmark/generate_report.py --pipeline b"
+          description: "Generate baseline KPI metrics for Pipeline B using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_b/baseline/report.json"
@@ -92,8 +104,8 @@ benchmark:
           description: "Run Pipeline C (Complex)"
           timeout: 900
 
-        - command: "python extract_report.py --pipeline c"
-          description: "Extract baseline KPI metrics for Pipeline C"
+        - command: "python benchmark/generate_report.py --pipeline c"
+          description: "Generate baseline KPI metrics for Pipeline C using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_c/baseline/report.json"
@@ -104,9 +116,10 @@ benchmark:
         models: 20
         expected_runtime: "48.3s"
 
-  # Candidate generation (after optimization)
+  # PHASE 3: Candidate generation (after optimization)
+  # Runs optimized SQL and generates candidate reports
   candidate:
-    enabled: false  # Enable after optimizing SQL
+    enabled: false  # Enable after optimizing SQL in Phase 2
 
     - name: "candidate-pipeline-a"
       steps:
@@ -114,8 +127,8 @@ benchmark:
           description: "Re-run optimized Pipeline A"
           timeout: 600
 
-        - command: "python extract_report.py --pipeline a --output benchmark/pipeline_a/candidate/report.json"
-          description: "Extract candidate KPI metrics for Pipeline A"
+        - command: "python benchmark/generate_report.py --pipeline a --output benchmark/pipeline_a/candidate/report.json"
+          description: "Generate candidate KPI metrics for Pipeline A using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_a/candidate/report.json"
@@ -126,8 +139,8 @@ benchmark:
           description: "Re-run optimized Pipeline B"
           timeout: 600
 
-        - command: "python extract_report.py --pipeline b --output benchmark/pipeline_b/candidate/report.json"
-          description: "Extract candidate KPI metrics for Pipeline B"
+        - command: "python benchmark/generate_report.py --pipeline b --output benchmark/pipeline_b/candidate/report.json"
+          description: "Generate candidate KPI metrics for Pipeline B using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_b/candidate/report.json"
@@ -138,29 +151,30 @@ benchmark:
           description: "Re-run optimized Pipeline C"
           timeout: 900
 
-        - command: "python extract_report.py --pipeline c --output benchmark/pipeline_c/candidate/report.json"
-          description: "Extract candidate KPI metrics for Pipeline C"
+        - command: "python benchmark/generate_report.py --pipeline c --output benchmark/pipeline_c/candidate/report.json"
+          description: "Generate candidate KPI metrics for Pipeline C using modular generate_report.py"
 
       artifacts:
         - "benchmark/pipeline_c/candidate/report.json"
 
-  # Comparison and analysis
+  # PHASE 4: Auto-Comparison (automatically runs after candidate generation)
+  # Compares baseline vs candidate reports and generates analysis with recommendations
   comparison:
     - name: "compare-pipeline-a"
-      command: "python benchmark/compare_kpis.py benchmark/pipeline_a/baseline/report.json benchmark/pipeline_a/candidate/report.json"
-      description: "Compare baseline vs candidate for Pipeline A"
+      command: "python benchmark/compare.py benchmark/pipeline_a/baseline/report.json benchmark/pipeline_a/candidate/report.json --output benchmark/pipeline_a/analysis.json"
+      description: "Compare baseline vs candidate for Pipeline A and generate analysis.json with deltas and recommendations"
       enabled_when: "candidate.enabled == true"
       timeout: 60
 
     - name: "compare-pipeline-b"
-      command: "python benchmark/compare_kpis.py benchmark/pipeline_b/baseline/report.json benchmark/pipeline_b/candidate/report.json"
-      description: "Compare baseline vs candidate for Pipeline B"
+      command: "python benchmark/compare.py benchmark/pipeline_b/baseline/report.json benchmark/pipeline_b/candidate/report.json --output benchmark/pipeline_b/analysis.json"
+      description: "Compare baseline vs candidate for Pipeline B and generate analysis.json with deltas and recommendations"
       enabled_when: "candidate.enabled == true"
       timeout: 60
 
     - name: "compare-pipeline-c"
-      command: "python benchmark/compare_kpis.py benchmark/pipeline_c/baseline/report.json benchmark/pipeline_c/candidate/report.json"
-      description: "Compare baseline vs candidate for Pipeline C"
+      command: "python benchmark/compare.py benchmark/pipeline_c/baseline/report.json benchmark/pipeline_c/candidate/report.json --output benchmark/pipeline_c/analysis.json"
+      description: "Compare baseline vs candidate for Pipeline C and generate analysis.json with deltas and recommendations"
       enabled_when: "candidate.enabled == true"
       timeout: 60
 
@@ -183,6 +197,9 @@ settings:
         - "benchmark/pipeline_a/candidate/"
         - "benchmark/pipeline_b/candidate/"
         - "benchmark/pipeline_c/candidate/"
+        - "benchmark/pipeline_a/analysis.json"
+        - "benchmark/pipeline_b/analysis.json"
+        - "benchmark/pipeline_c/analysis.json"
 
   # Notifications
   notifications:
@@ -284,3 +301,31 @@ reporting:
 #   artemis build --config artemis.yaml --pipeline a
 #   artemis build --config artemis.yaml --pipeline b
 #   artemis build --config artemis.yaml --pipeline c
+#
+# Manual execution of new scripts:
+#
+# Generate baseline report for Pipeline A:
+#   python benchmark/generate_report.py --pipeline a
+#
+# Generate candidate report for Pipeline A:
+#   python benchmark/generate_report.py --pipeline a --output benchmark/pipeline_a/candidate/report.json
+#
+# Compare baseline vs candidate (generate analysis.json):
+#   python benchmark/compare.py benchmark/pipeline_a/baseline/report.json benchmark/pipeline_a/candidate/report.json --output benchmark/pipeline_a/analysis.json
+#
+# TROUBLESHOOTING:
+# If baseline generation fails:
+#   - Ensure dbt artifacts exist: target/manifest.json and target/run_results.json
+#   - Run: dbt parse && dbt run
+#   - Check logs: benchmark/logs/generate_report_*.log
+#
+# If comparison fails:
+#   - Verify both baseline and candidate reports exist
+#   - Check report schema with: python -c "import json; print(json.load(open('benchmark/pipeline_a/baseline/report.json')).get('schema_version'))"
+#   - Check logs: benchmark/logs/compare_*.log
+#
+# FEATURE NOTES:
+# - generate_report.py: Modular report generation with 5 KPI metrics per model
+# - compare.py: Automatic baseline vs candidate comparison with analysis and recommendations
+# - Both scripts support --log-level DEBUG for detailed troubleshooting
+# - Backward compatible: Same --pipeline and --output flags as legacy scripts

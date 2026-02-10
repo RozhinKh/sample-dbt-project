@@ -26,5 +26,14 @@ __pycache__/
 .env.local
 
 # dbt configuration (contains environment-specific settings)
-# profiles.yml  # Commented out - we now include it with env vars
+profiles.yml
 dbt_project.local.yml
+
+# Benchmark artifacts and logs
+benchmark/logs/
+benchmark/*/baseline/report.json
+benchmark/*/candidate/report.json
+benchmark/*/baseline/*.json
+benchmark/*/candidate/*.json
+benchmark/*/baseline/*.log
+benchmark/*/candidate/*.log

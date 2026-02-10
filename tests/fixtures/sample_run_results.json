@@ -1,0 +1,88 @@
+{
+  "metadata": {
+    "dbt_schema_version": "https://schemas.getdbt.com/dbt/run-results/v5.json",
+    "dbt_version": "1.5.0",
+    "generated_at": "2024-01-01T12:00:00.000Z",
+    "invocation_id": "test-invocation-id",
+    "env": {},
+    "select": "state:modified+",
+    "state": "none",
+    "args": {}
+  },
+  "results": [
+    {
+      "unique_id": "model.project.simple_model",
+      "status": "success",
+      "execution_time": 1.234,
+      "message": null,
+      "adapter_response": {
+        "type": "run_sql",
+        "code": "CREATE TABLE simple_model AS ...",
+        "rows_affected": 1000
+      },
+      "thread_id": "Thread-1",
+      "timing": [
+        {
+          "name": "compile",
+          "started_at": "2024-01-01T12:00:00.000Z",
+          "completed_at": "2024-01-01T12:00:00.500Z"
+        },
+        {
+          "name": "execute",
+          "started_at": "2024-01-01T12:00:00.500Z",
+          "completed_at": "2024-01-01T12:00:01.734Z"
+        }
+      ]
+    },
+    {
+      "unique_id": "model.project.join_model",
+      "status": "success",
+      "execution_time": 5.678,
+      "message": null,
+      "adapter_response": {
+        "type": "run_sql",
+        "code": "CREATE TABLE join_model AS ...",
+        "rows_affected": 5000
+      },
+      "thread_id": "Thread-2",
+      "timing": []
+    },
+    {
+      "unique_id": "model.project.complex_model",
+      "status": "success",
+      "execution_time": 12.456,
+      "message": null,
+      "adapter_response": {
+        "type": "run_sql",
+        "code": "CREATE TABLE complex_model AS ...",
+        "rows_affected": 50000
+      },
+      "thread_id": "Thread-3",
+      "timing": []
+    },
+    {
+      "unique_id": "model.project.view_model",
+      "status": "success",
+      "execution_time": 0.567,
+      "message": null,
+      "adapter_response": {
+        "type": "run_sql",
+        "code": "CREATE VIEW view_model AS ...",
+        "rows_affected": 0
+      },
+      "thread_id": "Thread-4",
+      "timing": []
+    },
+    {
+      "unique_id": "model.project.no_code_model",
+      "status": "skipped",
+      "execution_time": 0.0,
+      "message": "Ephemeral model",
+      "adapter_response": {},
+      "thread_id": "Thread-5",
+      "timing": []
+    }
+  ],
+  "generated_at": "2024-01-01T12:00:20.000Z",
+  "elapsed_time": 20.0
+}
