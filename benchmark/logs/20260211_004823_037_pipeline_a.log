@@ -1,0 +1,47 @@
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Logging initialized for pipeline: pipeline_a
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] BENCHMARK REPORT GENERATION
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Pipeline: a
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Log Level: INFO
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Output path: benchmark\pipeline_a\baseline\report.json
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Loading configuration...
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Phase 1: Loading dbt artifacts...
+[2026-02-11 00:48:23.038] [INFO] [pipeline_a] Loading manifest from: target/manifest.json
+[2026-02-11 00:48:23.043] [INFO] [pipeline_a] Loading run_results from: target/run_results.json
+[2026-02-11 00:48:23.043] [INFO] [pipeline_a] ✓ Artifacts loaded and validated successfully
+[2026-02-11 00:48:23.072] [INFO] [pipeline_a] Phase 2: Extracting model data...
+[2026-02-11 00:48:23.072] [INFO] [pipeline_a] Found 42 models in manifest
+[2026-02-11 00:48:23.072] [INFO] [pipeline_a] ✓ Extracted 42 models
+[2026-02-11 00:48:23.073] [INFO] [pipeline_a] Phase 3: Building report structure...
+[2026-02-11 00:48:23.073] [INFO] [pipeline_a] Building report.json structure...
+[2026-02-11 00:48:23.073] [INFO] [pipeline_a] Report built: 4 models, 8 data quality flags
+[2026-02-11 00:48:23.073] [INFO] [pipeline_a] ✓ Report structure built
+[2026-02-11 00:48:23.073] [INFO] [pipeline_a] Phase 4: Validating report against schema...
+[2026-02-11 00:48:23.131] [WARNING] [pipeline_a] Schema validation errors: 9
+[2026-02-11 00:48:23.131] [WARNING] [pipeline_a]   - Unexpected property(ies) at models.0: Additional properties are not allowed ('kpi_data_complete' was unexpected)
+[2026-02-11 00:48:23.131] [WARNING] [pipeline_a]   - Invalid value at models.0.status: 'not_executed' not in ['success', 'partial', 'error', 'skipped', 'no_sql']
+[2026-02-11 00:48:23.131] [WARNING] [pipeline_a]   - Unexpected property(ies) at models.1: Additional properties are not allowed ('kpi_data_complete' was unexpected)
+[2026-02-11 00:48:23.132] [WARNING] [pipeline_a]   - Invalid value at models.1.status: 'not_executed' not in ['success', 'partial', 'error', 'skipped', 'no_sql']
+[2026-02-11 00:48:23.132] [WARNING] [pipeline_a]   - Unexpected property(ies) at models.2: Additional properties are not allowed ('kpi_data_complete' was unexpected)
+[2026-02-11 00:48:23.132] [WARNING] [pipeline_a]   ... and 4 more validation errors
+[2026-02-11 00:48:23.132] [INFO] [pipeline_a] Phase 5: Writing report to file...
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] ✓ Report written to: benchmark\pipeline_a\baseline\report.json
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] EXECUTION SUMMARY
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Pipeline: pipeline_a
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Models Processed: 4
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Models with Errors: 0
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Models with Incomplete Data: 0
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Total Execution Time (all models): 0.00s
+[2026-02-11 00:48:23.133] [INFO] [pipeline_a] Average Execution Time (per model): 0.00s
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Total Rows Produced: 0
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Total Bytes Scanned (estimated): 0 (0.00 GB)
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Total Estimated Credits: 0.00
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Total Estimated Cost: $0.00
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Data Quality Score: 0%
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Data Quality Flags: 8
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] Script Execution Time: 0.10s
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 00:48:23.134] [INFO] [pipeline_a] ✓ Report generation completed successfully (all models with complete data)

@@ -30,10 +30,11 @@ profiles.yml
 dbt_project.local.yml
 
 # Benchmark artifacts and logs
-benchmark/logs/
-benchmark/*/baseline/report.json
+# Baseline reports are committed to track initial performance metrics
+# benchmark/logs/
+# benchmark/*/baseline/report.json
 benchmark/*/candidate/report.json
-benchmark/*/baseline/*.json
+# benchmark/*/baseline/*.json
 benchmark/*/candidate/*.json
-benchmark/*/baseline/*.log
+# benchmark/*/baseline/*.log
 benchmark/*/candidate/*.log
