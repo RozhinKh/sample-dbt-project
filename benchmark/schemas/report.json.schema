@@ -1,0 +1,328 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://benchmark.local/schema/report/v1.0",
+  "title": "dbt Benchmark Report Schema",
+  "description": "Complete JSON schema for report.json output from dbt benchmarking system. Defines structure for KPI metrics, metadata, summaries, and data quality flags.",
+  "type": "object",
+  "version": "1.0.0",
+  "required": ["schema_version", "metadata", "models", "summary"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Schema version for future compatibility (e.g., 1.0.0, 2.0.0)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": ["1.0.0"]
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Report metadata and audit information",
+      "required": ["timestamp", "pipeline_name"],
+      "additionalProperties": false,
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "description": "ISO 8601 timestamp when report was generated",
+          "format": "date-time",
+          "examples": ["2024-01-15T14:30:22.123456Z"]
+        },
+        "report_id": {
+          "type": "string",
+          "description": "Unique identifier for this report run (optional, for tracking)",
+          "pattern": "^[a-f0-9]{32}$"
+        },
+        "pipeline_name": {
+          "type": "string",
+          "description": "Name of the dbt pipeline benchmarked (pipeline_a, pipeline_b, pipeline_c, etc)",
+          "enum": ["pipeline_a", "pipeline_b", "pipeline_c"],
+          "examples": ["pipeline_b"]
+        },
+        "models_processed": {
+          "type": "integer",
+          "description": "Total number of models processed in this report",
+          "minimum": 0,
+          "examples": [12]
+        },
+        "total_duration_seconds": {
+          "type": "number",
+          "description": "Total execution time for all models in seconds",
+          "minimum": 0,
+          "examples": [45.3]
+        },
+        "dbt_artifacts_version": {
+          "type": "string",
+          "description": "Version of dbt artifacts (manifest.json, run_results.json) used",
+          "examples": ["1.0", "1.5", "1.6"]
+        },
+        "dbt_version": {
+          "type": "string",
+          "description": "Version of dbt that generated the artifacts",
+          "examples": ["1.5.0", "1.6.2"]
+        }
+      }
+    },
+    "models": {
+      "type": "array",
+      "description": "Array of per-model KPI objects with all 5 KPI metrics",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "description": "KPI metrics for a single dbt model",
+        "required": ["model_name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "model_name": {
+            "type": "string",
+            "description": "Name of the dbt model (e.g., stg_trades, fact_trades)",
+            "examples": ["stg_trades", "fact_trades", "report_performance"]
+          },
+          "model_id": {
+            "type": "string",
+            "description": "Unique model identifier (usually model.project.model_name)",
+            "examples": ["model.portfolio_analytics.stg_trades"]
+          },
+          "model_type": {
+            "type": "string",
+            "description": "Type of model (view, table, seed, source, ephemeral, etc)",
+            "enum": ["view", "table", "seed", "source", "ephemeral"],
+            "examples": ["table"]
+          },
+          "model_layer": {
+            "type": "string",
+            "description": "Logical layer in dbt project (staging, intermediate, marts, report)",
+            "enum": ["staging", "intermediate", "marts", "report"],
+            "examples": ["intermediate"]
+          },
+          "status": {
+            "type": "string",
+            "description": "Model execution status",
+            "enum": ["success", "partial", "error", "skipped", "no_sql"],
+            "examples": ["success"]
+          },
+          "execution_time_seconds": {
+            "type": "number",
+            "description": "KPI 1: Model execution time in seconds",
+            "minimum": 0,
+            "examples": [2.345]
+          },
+          "rows_produced": {
+            "type": "integer",
+            "description": "KPI 2: Number of rows output by the model",
+            "minimum": 0,
+            "examples": [1000000]
+          },
+          "bytes_scanned": {
+            "type": "integer",
+            "description": "KPI 2: Estimated bytes scanned during model execution",
+            "minimum": 0,
+            "examples": [536870912]
+          },
+          "output_hash": {
+            "type": ["string", "null"],
+            "description": "KPI 3: SHA256 hash of model output for data equivalence validation",
+            "pattern": "^[a-f0-9]{64}$",
+            "examples": ["abc123def456..."]
+          },
+          "hash_calculation_method": {
+            "type": "string",
+            "description": "Method used to calculate hash (run_results, snowflake_query, unavailable)",
+            "enum": ["run_results_json", "snowflake_query", "unavailable"],
+            "examples": ["snowflake_query"]
+          },
+          "join_count": {
+            "type": "integer",
+            "description": "KPI 4: Number of JOINs in the model's SQL",
+            "minimum": 0,
+            "examples": [3]
+          },
+          "cte_count": {
+            "type": "integer",
+            "description": "KPI 4: Number of CTEs (Common Table Expressions) in SQL",
+            "minimum": 0,
+            "examples": [2]
+          },
+          "window_function_count": {
+            "type": "integer",
+            "description": "KPI 4: Number of window functions in SQL",
+            "minimum": 0,
+            "examples": [1]
+          },
+          "estimated_credits": {
+            "type": "number",
+            "description": "KPI 5: Estimated Snowflake credits consumed (formula: bytes_scanned / 1024^3 / 10)",
+            "minimum": 0,
+            "examples": [0.5]
+          },
+          "estimated_cost_usd": {
+            "type": "number",
+            "description": "KPI 5: Estimated cost in USD (credits * cost_per_credit)",
+            "minimum": 0,
+            "examples": [1.00]
+          },
+          "materialization": {
+            "type": "string",
+            "description": "dbt materialization type (table, view, incremental, ephemeral, snapshot)",
+            "examples": ["table", "view"]
+          },
+          "tags": {
+            "type": "array",
+            "description": "dbt tags applied to this model (e.g., pipeline_a, staging, core)",
+            "items": {
+              "type": "string"
+            },
+            "examples": [["pipeline_b", "intermediate", "core"]]
+          }
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "description": "Aggregated statistics across all models in the report",
+      "additionalProperties": false,
+      "properties": {
+        "total_execution_time_seconds": {
+          "type": "number",
+          "description": "Sum of all execution_time_seconds across models",
+          "minimum": 0,
+          "examples": [45.3]
+        },
+        "total_models_processed": {
+          "type": "integer",
+          "description": "Total number of models included in summary",
+          "minimum": 0,
+          "examples": [12]
+        },
+        "models_with_errors": {
+          "type": "integer",
+          "description": "Count of models with status='error' or 'partial'",
+          "minimum": 0,
+          "examples": [0]
+        },
+        "total_rows_produced": {
+          "type": "integer",
+          "description": "Sum of all rows_produced across models",
+          "minimum": 0,
+          "examples": [50000000]
+        },
+        "total_bytes_scanned": {
+          "type": "integer",
+          "description": "Sum of all bytes_scanned estimates across models",
+          "minimum": 0,
+          "examples": [536870912]
+        },
+        "total_estimated_credits": {
+          "type": "number",
+          "description": "Sum of all estimated_credits across models",
+          "minimum": 0,
+          "examples": [50.5]
+        },
+        "total_estimated_cost_usd": {
+          "type": "number",
+          "description": "Sum of all estimated_cost_usd across models (typically credits * $2.0 for standard edition)",
+          "minimum": 0,
+          "examples": [101.00]
+        },
+        "average_execution_time_seconds": {
+          "type": "number",
+          "description": "Average execution_time_seconds across models",
+          "minimum": 0,
+          "examples": [3.775]
+        },
+        "average_model_complexity": {
+          "type": "number",
+          "description": "Average total complexity (sum of joins + ctes + window functions per model)",
+          "minimum": 0,
+          "examples": [4.5]
+        },
+        "data_quality_score": {
+          "type": "integer",
+          "description": "Overall data quality score (0-100) based on successful hash validation",
+          "minimum": 0,
+          "maximum": 100,
+          "examples": [95]
+        },
+        "hash_validation_success_rate": {
+          "type": "number",
+          "description": "Percentage of models with successful hash calculation (0.0-1.0)",
+          "minimum": 0,
+          "maximum": 1,
+          "examples": [0.95]
+        }
+      }
+    },
+    "data_quality_flags": {
+      "type": "array",
+      "description": "List of validation warnings or issues detected during report generation",
+      "items": {
+        "type": "object",
+        "description": "A single data quality flag or warning",
+        "required": ["flag_type", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "model_name": {
+            "type": ["string", "null"],
+            "description": "Name of affected model (null if flag applies to entire report)",
+            "examples": ["stg_trades", null]
+          },
+          "flag_type": {
+            "type": "string",
+            "description": "Type of data quality issue detected",
+            "enum": ["missing_hash", "missing_execution_time", "data_not_scanned", "zero_rows", "hash_mismatch", "outlier_detected"],
+            "examples": ["missing_hash"]
+          },
+          "severity": {
+            "type": "string",
+            "description": "Severity level of the issue",
+            "enum": ["info", "warning", "error"],
+            "examples": ["warning"]
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable description of the issue",
+            "examples": ["Model stg_trades could not be hashed from Snowflake or run_results"]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when flag was detected",
+            "format": "date-time",
+            "examples": ["2024-01-15T14:30:22.123456Z"]
+          }
+        }
+      }
+    },
+    "warnings_and_errors": {
+      "type": "array",
+      "description": "List of any processing errors or warnings encountered during report generation",
+      "items": {
+        "type": "object",
+        "description": "A processing error or warning",
+        "required": ["level", "message"],
+        "additionalProperties": false,
+        "properties": {
+          "level": {
+            "type": "string",
+            "description": "Log level for the message",
+            "enum": ["debug", "info", "warning", "error"],
+            "examples": ["warning"]
+          },
+          "message": {
+            "type": "string",
+            "description": "Error or warning message",
+            "examples": ["Failed to load Snowflake credentials for schema queries"]
+          },
+          "source": {
+            "type": "string",
+            "description": "Component or module that generated the message",
+            "examples": ["KPI 2 - Work Metrics", "schema_validation"]
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "ISO 8601 timestamp when error occurred",
+            "format": "date-time",
+            "examples": ["2024-01-15T14:30:22.123456Z"]
+          }
+        }
+      }
+    }
+  }
+}

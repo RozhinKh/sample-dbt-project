@@ -1,0 +1,12 @@
+{
+  "execution_time_seconds": "INVALID_STRING",
+  "query_hash": 12345,
+  "row_count": "5000",
+  "bytes_scanned": 1048576.5,
+  "data_hash": ["array", "instead", "of", "string"],
+  "timestamp": 1234567890,
+  "query_id": true,
+  "join_count": "three",
+  "cte_count": 2.5,
+  "window_function_count": null
+}

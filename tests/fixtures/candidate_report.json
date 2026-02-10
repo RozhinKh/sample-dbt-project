@@ -1,0 +1,54 @@
+{
+  "metadata": {
+    "generated_at": "2024-01-15T11:00:00Z",
+    "pipeline_name": "data_warehouse",
+    "candidate_run_id": "candidate_v2"
+  },
+  "models": {
+    "stg_users": {
+      "execution_time": 4.8,
+      "cost": 12.0,
+      "bytes_scanned": 480000,
+      "join_count": 3,
+      "cte_count": 2,
+      "window_function_count": 1,
+      "data_hash": "abc123def456xyz789uvw012"
+    },
+    "stg_orders": {
+      "execution_time": 9.2,
+      "cost": 20.5,
+      "bytes_scanned": 820000,
+      "join_count": 2,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "data_hash": "def456xyz789uvw012abc124"
+    },
+    "fct_sales": {
+      "execution_time": 18.2,
+      "cost": 50.2,
+      "bytes_scanned": 2500000,
+      "join_count": 6,
+      "cte_count": 4,
+      "window_function_count": 3,
+      "data_hash": "xyz789uvw012abc123def456"
+    },
+    "dim_products": {
+      "execution_time": 3.25,
+      "cost": 8.1,
+      "bytes_scanned": 315000,
+      "join_count": 1,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "data_hash": "prod_baseline_abc123"
+    },
+    "fct_inventory": {
+      "execution_time": 27.9,
+      "cost": 68.5,
+      "bytes_scanned": 4200000,
+      "join_count": 7,
+      "cte_count": 5,
+      "window_function_count": 4,
+      "data_hash": "inv_candidate_changed12"
+    }
+  }
+}
