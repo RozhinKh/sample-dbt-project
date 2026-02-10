@@ -26,5 +26,5 @@ __pycache__/
 .env.local
 
 # dbt configuration (contains environment-specific settings)
-profiles.yml
+# profiles.yml  # Commented out - we now include it with env vars
 dbt_project.local.yml
