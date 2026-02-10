@@ -96,7 +96,7 @@
           "status": {
             "type": "string",
             "description": "Model execution status",
-            "enum": ["success", "partial", "error", "skipped", "no_sql"],
+            "enum": ["success", "partial", "error", "skipped", "no_sql", "not_executed"],
             "examples": ["success"]
           },
           "execution_time_seconds": {
@@ -171,6 +171,11 @@
               "type": "string"
             },
             "examples": [["pipeline_b", "intermediate", "core"]]
+          },
+          "kpi_data_complete": {
+            "type": "boolean",
+            "description": "Flag indicating whether all KPI metrics are available for this model (true if no missing data)",
+            "examples": [true, false]
           }
         }
       }
@@ -195,6 +200,12 @@
         "models_with_errors": {
           "type": "integer",
           "description": "Count of models with status='error' or 'partial'",
+          "minimum": 0,
+          "examples": [0]
+        },
+        "models_with_incomplete_data": {
+          "type": "integer",
+          "description": "Count of models with incomplete KPI data (kpi_data_complete=false)",
           "minimum": 0,
           "examples": [0]
         },

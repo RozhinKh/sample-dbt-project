@@ -459,7 +459,32 @@ def build_report(
     hashes_successful = sum(1 for m in models_array if m["output_hash"] is not None)
     hash_success_rate = hashes_successful / len(models_array) if models_array else 0.0
     data_quality_score = int(hash_success_rate * 100)
-    
+
+    # Add system capability warnings about validation limitations
+    if hash_success_rate == 0.0 and len(models_array) > 0:
+        warnings_and_errors.append({
+            "level": "warning",
+            "message": "Data equivalence validation unavailable: Output hash calculation requires Snowflake query access. Without hash validation, you cannot verify that optimized code produces identical results to baseline code.",
+            "source": "KPI 3 - Data Equivalence",
+            "timestamp": datetime.now().isoformat()
+        })
+
+    if total_bytes > 0:
+        warnings_and_errors.append({
+            "level": "info",
+            "message": "Bytes scanned are estimated (rows_produced * 500 bytes). Actual bytes scanned from Snowflake query metadata would be more accurate. This affects cost estimation accuracy.",
+            "source": "KPI 2 - Work Metrics",
+            "timestamp": datetime.now().isoformat()
+        })
+
+    if total_cost > 0 or total_credits > 0:
+        warnings_and_errors.append({
+            "level": "info",
+            "message": "Cost estimates are approximations based on estimated bytes scanned. For production cost analysis, use Snowflake QUERY_HISTORY for actual credit consumption.",
+            "source": "KPI 5 - Cost Estimation",
+            "timestamp": datetime.now().isoformat()
+        })
+
     # Build final report
     report = {
         "schema_version": "1.0.0",

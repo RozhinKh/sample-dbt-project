@@ -202,6 +202,63 @@ SNOWFLAKE_PRICING = {
 
 
 # ============================================================================
+# COMPARISON THRESHOLDS
+# ============================================================================
+# Thresholds for baseline vs candidate comparison alerts
+# These determine when performance changes are significant enough to notify
+
+COMPARISON_THRESHOLDS = {
+    "execution_time": {
+        "improvement_threshold_percent": 5,
+        "regression_threshold_percent": 10,
+        "description": "Alert if execution time improves by >=5% or regresses by >=10%",
+        "alert_on_improvement": True,
+        "alert_on_regression": True,
+        "regression_severity": "HIGH",
+        "improvement_severity": "INFO"
+    },
+    "bytes_scanned": {
+        "improvement_threshold_percent": 10,
+        "regression_threshold_percent": 15,
+        "description": "Alert if bytes scanned improves by >=10% or regresses by >=15%",
+        "alert_on_improvement": True,
+        "alert_on_regression": True,
+        "regression_severity": "MEDIUM",
+        "improvement_severity": "INFO"
+    },
+    "cost": {
+        "improvement_threshold_percent": 5,
+        "regression_threshold_percent": 20,
+        "description": "Alert if cost improves by >=5% or regresses by >=20%",
+        "alert_on_improvement": True,
+        "alert_on_regression": True,
+        "regression_severity": "MEDIUM",
+        "improvement_severity": "INFO"
+    },
+    "complexity": {
+        "improvement_threshold_percent": 10,
+        "regression_threshold_percent": 25,
+        "description": "Alert if query complexity improves by >=10% or regresses by >=25%",
+        "alert_on_improvement": False,
+        "alert_on_regression": True,
+        "regression_severity": "LOW",
+        "improvement_severity": "INFO"
+    },
+    "data_equivalence": {
+        "require_hash_match": True,
+        "description": "CRITICAL: Baseline and candidate must produce identical output hashes",
+        "alert_on_mismatch": True,
+        "mismatch_severity": "CRITICAL"
+    },
+    "global": {
+        "min_sample_size": 1,
+        "description": "Minimum number of models required for statistical significance",
+        "confidence_level": 0.95
+    }
+}
+
+
+# ============================================================================
 # IMPROVEMENT TARGETS
 # ============================================================================
 # Goals and targets for optimization efforts
@@ -374,6 +431,7 @@ def load_config() -> Dict[str, Any]:
     config = {
         "kpi_definitions": KPI_DEFINITIONS,
         "bottleneck_thresholds": BOTTLENECK_THRESHOLDS,
+        "comparison_thresholds": COMPARISON_THRESHOLDS,
         "pricing": SNOWFLAKE_PRICING,
         "improvement_targets": IMPROVEMENT_TARGETS,
         "optimization_rules": OPTIMIZATION_RULES,
