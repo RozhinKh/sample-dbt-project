@@ -9,7 +9,10 @@ bain_capital:
       user: "{{ env_var('SNOWFLAKE_USER', 'AWENDELA') }}"
       password: "{{ env_var('SNOWFLAKE_PASSWORD', 'Xarsedasdvp1!1') }}"
       database: "{{ env_var('SNOWFLAKE_DATABASE', 'BAIN_ANALYTICS') }}"
-      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'COMPUTE_WH') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'SNOWFLAKE_LEARNING_WH') }}"
       schema: "{{ env_var('SNOWFLAKE_SCHEMA', 'DEV') }}"
-      threads: 4
-      client_session_keep_alive: False
+      threads: 1
+      client_session_keep_alive: True
+      connect_timeout: 60
+      retry_on_database_errors: True
+      retry_all: True
