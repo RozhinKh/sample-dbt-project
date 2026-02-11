@@ -1491,34 +1491,48 @@ def query_snowflake_schema(database: str, schema: str, table: str, credentials: 
 # OUTPUT VALIDATION AND HASH CALCULATION
 # ============================================================================
 
-def serialize_rows_consistent(rows: List[Dict[str, Any]]) -> str:
+def serialize_rows_consistent(rows: List[Dict[str, Any]], exclude_columns: Optional[set] = None) -> str:
     """
-    Serialize rows to a consistent JSON string for hashing.
+    Serialize row data to deterministic JSON string for hashing.
     
-    Creates a deterministic JSON representation of rows by:
-    - Sorting rows by all column values for consistent ordering
+    Uses consistent formatting to ensure identical data always produces identical JSON:
     - Using sorted keys for JSON serialization
-    - Removing any volatile fields (timestamps, IDs)
+    - Removing any volatile fields (timestamps, IDs) - implements behavior promised in docstring line 1501
     - Using consistent formatting and encoding
     
     Args:
         rows (List[Dict[str, Any]]): List of row dictionaries to serialize
+        exclude_columns (Optional[set]): Set of column names to exclude from serialization
     
     Returns:
         str: Deterministic JSON string representation of rows
     
     Examples:
-        >>> rows = [{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]
-        >>> json_str = serialize_rows_consistent(rows)
+        >>> rows = [{"id": 1, "name": "Alice", "dbt_loaded_at": "2024-01-01"}]
+        >>> json_str = serialize_rows_consistent(rows, exclude_columns={'dbt_loaded_at'})
         >>> print(json_str)
-        '[{"id": 1, "name": "Alice"}, {"id": 2, "name": "Bob"}]'
+        '[{"id": 1, "name": "Alice"}]'
     """
     if not rows:
         return json.dumps([], separators=(',', ':'), sort_keys=True)
     
+    exclude_columns = exclude_columns or set()
+    
+    # Pre-compute lowercase exclusion set for efficiency (compute once, not per row)
+    exclude_lower = {c.lower() for c in exclude_columns}
+    
+    # Remove volatile columns from each row before serialization
+    filtered_rows = [
+        {k: v for k, v in row.items() if k.lower() not in exclude_lower}
+        for row in rows
+    ]
+    
     # Sort rows by their string representation for consistent ordering
     # This ensures the same data always produces the same hash
-    sorted_rows = sorted(rows, key=lambda row: json.dumps(row, separators=(',', ':'), sort_keys=True, default=str))
+    sorted_rows = sorted(
+        filtered_rows, 
+        key=lambda row: json.dumps(row, separators=(',', ':'), sort_keys=True, default=str)
+    )
     
     # Serialize to JSON with consistent formatting
     return json.dumps(sorted_rows, separators=(',', ':'), sort_keys=True, default=str)
@@ -1655,6 +1669,17 @@ def calculate_output_hash(model_data: Dict[str, Any], database: str, schema: str
     """
     import hashlib
     
+    # Volatile columns to exclude from hash (columns that change on every run)
+    # These columns are excluded because they don't represent business logic changes
+    VOLATILE_COLUMNS = {
+        'dbt_loaded_at',
+        'dbt_run_id',
+        'dbt_timestamp',
+        'updated_at',
+        'load_timestamp',
+        'created_at'
+    }
+    
     rows = []
     data_source = "unavailable"
     
@@ -1700,7 +1725,7 @@ def calculate_output_hash(model_data: Dict[str, Any], database: str, schema: str
     
     # Serialize and hash the rows
     try:
-        json_str = serialize_rows_consistent(rows)
+        json_str = serialize_rows_consistent(rows, exclude_columns=VOLATILE_COLUMNS)
         hash_value = hashlib.sha256(json_str.encode('utf-8')).hexdigest()
         
         if logger:

@@ -4,7 +4,6 @@
 -- Models downstream: 1 (int_cashflow_aggregated)
 
 {{ config(
-    materialized='table',
     tags=['staging', 'pipeline_a'],
     meta={'pipeline': 'a', 'layer': 'staging'}
 ) }}
