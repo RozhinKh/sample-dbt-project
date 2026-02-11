@@ -1,0 +1,53 @@
+[2026-02-11 11:37:49.700] [INFO] [pipeline_b] Logging initialized for pipeline: pipeline_b
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] ================================================================================
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] BENCHMARK REPORT GENERATION
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] ================================================================================
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Pipeline: b
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Log Level: INFO
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Output path: benchmark\pipeline_b\baseline\report.json
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Loading configuration...
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Phase 1: Loading dbt artifacts...
+[2026-02-11 11:37:49.701] [INFO] [pipeline_b] Loading manifest from: target/manifest.json
+[2026-02-11 11:37:49.744] [INFO] [pipeline_b] Loading run_results from: target/run_results.json
+[2026-02-11 11:37:49.779] [INFO] [pipeline_b] ✓ Artifacts loaded and validated successfully
+[2026-02-11 11:37:49.779] [INFO] [pipeline_b] Phase 2: Extracting model data...
+[2026-02-11 11:37:49.780] [INFO] [pipeline_b] Found 42 models in manifest
+[2026-02-11 11:37:49.780] [INFO] [pipeline_b] ✓ Extracted 42 models
+[2026-02-11 11:37:49.780] [INFO] [pipeline_b] Phase 3: Building report structure...
+[2026-02-11 11:37:49.780] [INFO] [pipeline_b] Building report.json structure...
+[2026-02-11 11:38:25.206] [INFO] [pipeline_b] ✓ Retrieved 5 rows from BAIN_ANALYTICS.DEV.int_security_performance
+[2026-02-11 11:38:59.014] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.int_trades_enriched
+[2026-02-11 11:39:36.101] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.int_trade_execution_analysis
+[2026-02-11 11:40:14.106] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.int_trade_metrics
+[2026-02-11 11:40:48.670] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.int_trade_summary
+[2026-02-11 11:41:23.960] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.fact_trades
+[2026-02-11 11:41:57.933] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.report_trade_performance
+[2026-02-11 11:42:32.358] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.report_trading_performance
+[2026-02-11 11:43:06.444] [INFO] [pipeline_b] ✓ Retrieved 5 rows from BAIN_ANALYTICS.DEV.stg_brokers
+[2026-02-11 11:43:41.369] [INFO] [pipeline_b] ✓ Retrieved 90 rows from BAIN_ANALYTICS.DEV.stg_market_prices
+[2026-02-11 11:44:15.868] [INFO] [pipeline_b] ✓ Retrieved 15 rows from BAIN_ANALYTICS.DEV.stg_securities
+[2026-02-11 11:44:50.227] [INFO] [pipeline_b] ✓ Retrieved 50 rows from BAIN_ANALYTICS.DEV.stg_trades
+[2026-02-11 11:44:50.228] [INFO] [pipeline_b] Report built: 12 models, 0 data quality flags
+[2026-02-11 11:44:50.229] [INFO] [pipeline_b] ✓ Report structure built
+[2026-02-11 11:44:50.229] [INFO] [pipeline_b] Phase 4: Validating report against schema...
+[2026-02-11 11:44:50.294] [INFO] [pipeline_b] ✓ Report validates against schema
+[2026-02-11 11:44:50.294] [INFO] [pipeline_b] Phase 5: Writing report to file...
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] ✓ Report written to: benchmark\pipeline_b\baseline\report.json
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] ================================================================================
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] EXECUTION SUMMARY
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] ================================================================================
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Pipeline: pipeline_b
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Models Processed: 12
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Models with Errors: 0
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Models with Incomplete Data: 0
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Total Execution Time (all models): 49.13s
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Average Execution Time (per model): 4.09s
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Total Rows Produced: 12
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Total Bytes Scanned (estimated): 1,000 (0.00 GB)
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Total Estimated Credits: 0.00
+[2026-02-11 11:44:50.295] [INFO] [pipeline_b] Total Estimated Cost: $0.00
+[2026-02-11 11:44:50.296] [INFO] [pipeline_b] Data Quality Score: 100%
+[2026-02-11 11:44:50.296] [INFO] [pipeline_b] Data Quality Flags: 0
+[2026-02-11 11:44:50.296] [INFO] [pipeline_b] Script Execution Time: 420.60s
+[2026-02-11 11:44:50.296] [INFO] [pipeline_b] ================================================================================
+[2026-02-11 11:44:50.296] [INFO] [pipeline_b] ✓ Report generation completed successfully (all models with complete data)

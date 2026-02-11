@@ -1,0 +1,45 @@
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] Logging initialized for pipeline: pipeline_a
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] BENCHMARK REPORT GENERATION
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] Pipeline: a
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] Log Level: INFO
+[2026-02-11 11:32:33.218] [INFO] [pipeline_a] Output path: benchmark\pipeline_a\baseline\report.json
+[2026-02-11 11:32:33.222] [INFO] [pipeline_a] Loading configuration...
+[2026-02-11 11:32:33.222] [INFO] [pipeline_a] Phase 1: Loading dbt artifacts...
+[2026-02-11 11:32:33.222] [INFO] [pipeline_a] Loading manifest from: target/manifest.json
+[2026-02-11 11:32:33.263] [INFO] [pipeline_a] Loading run_results from: target/run_results.json
+[2026-02-11 11:32:33.295] [INFO] [pipeline_a] ✓ Artifacts loaded and validated successfully
+[2026-02-11 11:32:33.295] [INFO] [pipeline_a] Phase 2: Extracting model data...
+[2026-02-11 11:32:33.295] [INFO] [pipeline_a] Found 42 models in manifest
+[2026-02-11 11:32:33.296] [INFO] [pipeline_a] ✓ Extracted 42 models
+[2026-02-11 11:32:33.296] [INFO] [pipeline_a] Phase 3: Building report structure...
+[2026-02-11 11:32:33.296] [INFO] [pipeline_a] Building report.json structure...
+[2026-02-11 11:33:08.991] [INFO] [pipeline_a] ✓ Retrieved 3261 rows from BAIN_ANALYTICS.DEV.int_cashflow_aggregated
+[2026-02-11 11:33:40.902] [INFO] [pipeline_a] ✓ Retrieved 20 rows from BAIN_ANALYTICS.DEV.int_portfolio_attributes
+[2026-02-11 11:34:15.645] [INFO] [pipeline_a] ✓ Retrieved 5000 rows from BAIN_ANALYTICS.DEV.stg_cashflows
+[2026-02-11 11:34:54.058] [INFO] [pipeline_a] ✓ Retrieved 20 rows from BAIN_ANALYTICS.DEV.stg_portfolios
+[2026-02-11 11:34:54.059] [INFO] [pipeline_a] Report built: 4 models, 0 data quality flags
+[2026-02-11 11:34:54.059] [INFO] [pipeline_a] ✓ Report structure built
+[2026-02-11 11:34:54.059] [INFO] [pipeline_a] Phase 4: Validating report against schema...
+[2026-02-11 11:34:54.128] [INFO] [pipeline_a] ✓ Report validates against schema
+[2026-02-11 11:34:54.128] [INFO] [pipeline_a] Phase 5: Writing report to file...
+[2026-02-11 11:34:54.128] [INFO] [pipeline_a] ✓ Report written to: benchmark\pipeline_a\baseline\report.json
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] EXECUTION SUMMARY
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Pipeline: pipeline_a
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Models Processed: 4
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Models with Errors: 0
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Models with Incomplete Data: 0
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Total Execution Time (all models): 16.95s
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Average Execution Time (per model): 4.24s
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Total Rows Produced: 4
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Total Bytes Scanned (estimated): 2,000 (0.00 GB)
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Total Estimated Credits: 0.00
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Total Estimated Cost: $0.00
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Data Quality Score: 100%
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Data Quality Flags: 0
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] Script Execution Time: 140.91s
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] ================================================================================
+[2026-02-11 11:34:54.129] [INFO] [pipeline_a] ✓ Report generation completed successfully (all models with complete data)
