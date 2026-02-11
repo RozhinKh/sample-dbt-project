@@ -1,0 +1,17 @@
+# dbt Benchmarking System Dependencies
+
+# Core dependencies
+dbt-core>=1.7.0
+dbt-snowflake>=1.7.0
+
+# Snowflake connector for hash calculation and query history
+snowflake-connector-python>=3.0.0
+
+# Schema validation
+jsonschema>=4.0.0
+
+# YAML parsing for profiles.yml
+PyYAML>=6.0
+
+# Optional: Enhanced logging
+colorlog>=6.7.0

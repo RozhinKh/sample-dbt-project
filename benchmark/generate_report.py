@@ -116,7 +116,21 @@ Examples:
         default="INFO",
         help="Logging level (default: INFO)"
     )
-    
+
+    parser.add_argument(
+        "--profile",
+        type=str,
+        default="bain_capital",
+        help="dbt profile name to use for Snowflake credentials (default: bain_capital)"
+    )
+
+    parser.add_argument(
+        "--use-snowflake",
+        action="store_true",
+        default=False,
+        help="Enable Snowflake connectivity for hash calculation and actual query metrics (default: False)"
+    )
+
     return parser.parse_args()
 
 
@@ -133,7 +147,13 @@ def get_default_output_path(pipeline: str) -> Path:
     return Path(f"benchmark/pipeline_{pipeline}/baseline/report.json")
 
 
-def extract_kpi_metrics(model: Dict[str, Any], manifest: Dict[str, Any], logger: logging.Logger) -> Tuple[Dict[str, Any], bool, List[str]]:
+def extract_kpi_metrics(
+    model: Dict[str, Any],
+    manifest: Dict[str, Any],
+    logger: logging.Logger,
+    use_snowflake: bool = False,
+    profile_name: str = "bain_capital"
+) -> Tuple[Dict[str, Any], bool, List[str]]:
     """
     Extract all 5 KPI metrics for a single model with comprehensive error handling.
     
@@ -184,6 +204,7 @@ def extract_kpi_metrics(model: Dict[str, Any], manifest: Dict[str, Any], logger:
             is_complete = False
         
         # KPI 2: Work Metrics (rows and bytes)
+        actual_metrics = {}  # Store actual metrics from QUERY_HISTORY if available
         try:
             adapter_response = model.get("adapter_response", {})
             rows_produced = adapter_response.get("rows_affected", 0)
@@ -200,6 +221,32 @@ def extract_kpi_metrics(model: Dict[str, Any], manifest: Dict[str, Any], logger:
             # Estimate bytes scanned (simple estimation: rows * avg_row_width)
             estimated_row_width = 500
             bytes_scanned = rows_produced * estimated_row_width if rows_produced > 0 else 0
+
+            # Try to get actual metrics from Snowflake QUERY_HISTORY if enabled
+            if use_snowflake:
+                query_id = model.get("adapter_response", {}).get("query_id", "")
+                if query_id:
+                    try:
+                        from helpers import get_query_metrics_from_history, parse_profiles_yml
+
+                        credentials = parse_profiles_yml(profile_name)
+                        actual_metrics = get_query_metrics_from_history(query_id, credentials, logger)
+
+                        if actual_metrics and 'bytes_scanned' in actual_metrics:
+                            # Use actual bytes scanned instead of estimate
+                            bytes_scanned = actual_metrics['bytes_scanned']
+
+                            # Also update rows if more accurate
+                            if actual_metrics.get('rows_produced', 0) > 0:
+                                rows_produced = actual_metrics['rows_produced']
+
+                            logger.debug(f"  Using actual metrics from QUERY_HISTORY: {bytes_scanned:,} bytes, {rows_produced:,} rows")
+                        else:
+                            logger.debug(f"  Query history unavailable for {query_id}, using estimates")
+
+                    except Exception as e:
+                        logger.debug(f"  Query history lookup failed for {model_name}: {str(e)}, using estimates")
+
         except Exception as e:
             logger.debug(f"Error extracting work metrics for {model_name}: {str(e)}")
             rows_produced = 0
@@ -208,9 +255,42 @@ def extract_kpi_metrics(model: Dict[str, Any], manifest: Dict[str, Any], logger:
             is_complete = False
         
         # KPI 3: Output Hash (SHA256)
-        # For now, we'll set to null as proper hash calculation requires Snowflake access
         output_hash = None
         hash_calculation_method = "unavailable"
+
+        # Try to calculate hash if Snowflake connectivity enabled
+        if use_snowflake:
+            try:
+                from helpers import calculate_output_hash, parse_profiles_yml
+
+                # Get Snowflake credentials from profiles.yml
+                try:
+                    credentials = parse_profiles_yml(profile_name)
+                    database = model.get("database", credentials.get("database"))
+                    schema = model.get("schema", credentials.get("schema"))
+                    table_name = model.get("model_name")
+
+                    if database and schema and table_name:
+                        output_hash, data_source, hash_algo = calculate_output_hash(
+                            model_data=model,
+                            database=database,
+                            schema=schema,
+                            table=table_name,
+                            credentials=credentials,
+                            model_name=model.get("model_name", "unknown"),
+                            logger=logger
+                        )
+                        hash_calculation_method = data_source
+
+                        if output_hash:
+                            logger.debug(f"  Hash calculated for {table_name}: {output_hash[:16]}... (method: {data_source})")
+                        else:
+                            logger.debug(f"  Hash calculation returned None for {table_name}")
+                except Exception as e:
+                    logger.debug(f"  Hash calculation skipped for {model_name}: {str(e)}")
+
+            except ImportError as e:
+                logger.debug(f"  Snowflake connector not available: {str(e)}")
         
         # KPI 4: Query Complexity (JOINs, CTEs, Window Functions)
         join_count = 0
@@ -246,8 +326,14 @@ def extract_kpi_metrics(model: Dict[str, Any], manifest: Dict[str, Any], logger:
         
         # KPI 5: Cost Estimation (Snowflake credits)
         try:
-            estimated_credits = calculate_credits(bytes_scanned, "standard")
-            estimated_cost_usd = calculate_cost(estimated_credits, "standard")
+            # Use actual credits from QUERY_HISTORY if available, otherwise estimate
+            if actual_metrics and actual_metrics.get('credits_used'):
+                estimated_credits = actual_metrics['credits_used']
+                estimated_cost_usd = calculate_cost(estimated_credits, "standard")
+                logger.debug(f"  Using actual credits from QUERY_HISTORY: {estimated_credits}")
+            else:
+                estimated_credits = calculate_credits(bytes_scanned, "standard")
+                estimated_cost_usd = calculate_cost(estimated_credits, "standard")
         except Exception as e:
             logger.debug(f"Error calculating cost for {model_name}: {str(e)}")
             estimated_credits = 0.0
@@ -294,7 +380,9 @@ def build_report(
     manifest: Dict[str, Any],
     run_results: Dict[str, Any],
     parsed_models: List[Dict[str, Any]],
-    logger: logging.Logger
+    logger: logging.Logger,
+    use_snowflake: bool = False,
+    profile_name: str = "bain_capital"
 ) -> Dict[str, Any]:
     """
     Build complete report.json structure matching the schema.
@@ -334,7 +422,9 @@ def build_report(
         try:
             # Extract all KPI metrics (returns tuple: metrics, is_complete, warnings)
             try:
-                kpi_metrics, is_complete, kpi_warnings = extract_kpi_metrics(model, manifest, logger)
+                kpi_metrics, is_complete, kpi_warnings = extract_kpi_metrics(
+                    model, manifest, logger, use_snowflake, profile_name
+                )
                 
                 # Log any warnings from KPI extraction
                 if kpi_warnings:
@@ -397,6 +487,7 @@ def build_report(
                 "estimated_credits": kpi_metrics["estimated_credits"],
                 "estimated_cost_usd": kpi_metrics["estimated_cost_usd"],
                 "materialization": model_type,
+                "query_id": model.get("adapter_response", {}).get("query_id", ""),
                 "tags": model.get("tags", []),
                 "kpi_data_complete": is_complete
             }
@@ -462,28 +553,59 @@ def build_report(
 
     # Add system capability warnings about validation limitations
     if hash_success_rate == 0.0 and len(models_array) > 0:
+        if use_snowflake:
+            warnings_and_errors.append({
+                "level": "warning",
+                "message": "Data equivalence validation failed: Snowflake integration was enabled but no hashes were calculated. Check Snowflake credentials and model accessibility.",
+                "source": "KPI 3 - Data Equivalence",
+                "timestamp": datetime.now().isoformat()
+            })
+        else:
+            warnings_and_errors.append({
+                "level": "warning",
+                "message": "Data equivalence validation unavailable: Use --use-snowflake flag to enable hash calculation. Without hash validation, you cannot verify that optimized code produces identical results.",
+                "source": "KPI 3 - Data Equivalence",
+                "timestamp": datetime.now().isoformat()
+            })
+    elif hash_success_rate > 0.0 and hash_success_rate < 1.0 and len(models_array) > 0:
         warnings_and_errors.append({
             "level": "warning",
-            "message": "Data equivalence validation unavailable: Output hash calculation requires Snowflake query access. Without hash validation, you cannot verify that optimized code produces identical results to baseline code.",
+            "message": f"Partial hash coverage: {hashes_successful}/{len(models_array)} models hashed ({hash_success_rate*100:.0f}%). Models without hashes cannot be validated for data equivalence.",
             "source": "KPI 3 - Data Equivalence",
             "timestamp": datetime.now().isoformat()
         })
 
     if total_bytes > 0:
-        warnings_and_errors.append({
-            "level": "info",
-            "message": "Bytes scanned are estimated (rows_produced * 500 bytes). Actual bytes scanned from Snowflake query metadata would be more accurate. This affects cost estimation accuracy.",
-            "source": "KPI 2 - Work Metrics",
-            "timestamp": datetime.now().isoformat()
-        })
+        if use_snowflake:
+            warnings_and_errors.append({
+                "level": "info",
+                "message": "Bytes scanned fetched from Snowflake QUERY_HISTORY for accurate cost analysis.",
+                "source": "KPI 2 - Work Metrics",
+                "timestamp": datetime.now().isoformat()
+            })
+        else:
+            warnings_and_errors.append({
+                "level": "info",
+                "message": "Bytes scanned are estimated (rows_produced * 500 bytes). Use --use-snowflake flag for actual metrics from QUERY_HISTORY.",
+                "source": "KPI 2 - Work Metrics",
+                "timestamp": datetime.now().isoformat()
+            })
 
     if total_cost > 0 or total_credits > 0:
-        warnings_and_errors.append({
-            "level": "info",
-            "message": "Cost estimates are approximations based on estimated bytes scanned. For production cost analysis, use Snowflake QUERY_HISTORY for actual credit consumption.",
-            "source": "KPI 5 - Cost Estimation",
-            "timestamp": datetime.now().isoformat()
-        })
+        if use_snowflake:
+            warnings_and_errors.append({
+                "level": "info",
+                "message": "Cost estimates based on actual Snowflake credit consumption from QUERY_HISTORY.",
+                "source": "KPI 5 - Cost Estimation",
+                "timestamp": datetime.now().isoformat()
+            })
+        else:
+            warnings_and_errors.append({
+                "level": "info",
+                "message": "Cost estimates are approximations based on estimated bytes scanned. Use --use-snowflake flag for actual credit consumption.",
+                "source": "KPI 5 - Cost Estimation",
+                "timestamp": datetime.now().isoformat()
+            })
 
     # Build final report
     report = {
@@ -659,7 +781,15 @@ def main() -> int:
         
         # 7. Build report
         logger.info("Phase 3: Building report structure...")
-        report = build_report(args.pipeline, manifest, run_results, parsed_models, logger)
+        report = build_report(
+            args.pipeline,
+            manifest,
+            run_results,
+            parsed_models,
+            logger,
+            args.use_snowflake,
+            args.profile
+        )
         logger.info("✓ Report structure built")
         
         # 8. Validate against schema

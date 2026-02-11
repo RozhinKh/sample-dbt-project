@@ -164,6 +164,11 @@
             "description": "dbt materialization type (table, view, incremental, ephemeral, snapshot)",
             "examples": ["table", "view"]
           },
+          "query_id": {
+            "type": ["string", "null"],
+            "description": "Snowflake query ID from adapter response (for QUERY_HISTORY lookup and audit trail)",
+            "examples": ["01c253ce-0307-b61a-001d-93430006a1e2", ""]
+          },
           "tags": {
             "type": "array",
             "description": "dbt tags applied to this model (e.g., pipeline_a, staging, core)",

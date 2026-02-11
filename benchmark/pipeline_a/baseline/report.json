@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
   "metadata": {
-    "timestamp": "2026-02-11T00:58:22.563095",
+    "timestamp": "2026-02-11T11:34:54.059588",
     "pipeline_name": "pipeline_a",
     "models_processed": 4,
-    "total_duration_seconds": 18.606444120407104,
+    "total_duration_seconds": 16.949452877044678,
     "dbt_artifacts_version": "https://schemas.getdbt.com/dbt/run-results/v6.json",
     "dbt_version": "1.11.4"
   },
@@ -15,17 +15,18 @@
       "model_type": "table",
       "model_layer": "intermediate",
       "status": "success",
-      "execution_time_seconds": 5.5917229652404785,
+      "execution_time_seconds": 5.308936595916748,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": null,
-      "hash_calculation_method": "unavailable",
+      "output_hash": "ee39b1f8f1420f1f0adbadcc929bdb0c4f34abf039ab3260b231105816cab6a8",
+      "hash_calculation_method": "snowflake_query",
       "join_count": 1,
       "cte_count": 1,
       "window_function_count": 0,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
+      "query_id": "01c25642-0307-bc54-001d-93430008305a",
       "tags": [
         "intermediate",
         "pipeline_a"
@@ -38,17 +39,18 @@
       "model_type": "table",
       "model_layer": "intermediate",
       "status": "success",
-      "execution_time_seconds": 4.139840841293335,
+      "execution_time_seconds": 3.513550043106079,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": null,
-      "hash_calculation_method": "unavailable",
+      "output_hash": "3d2b9f72d0c0431875e4bc7dd183a28a576aa37d69330307b305c148a33044aa",
+      "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 2,
       "window_function_count": 0,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
+      "query_id": "01c25642-0307-be24-001d-93430008108a",
       "tags": [
         "intermediate",
         "pipeline_a"
@@ -61,17 +63,18 @@
       "model_type": "table",
       "model_layer": "staging",
       "status": "success",
-      "execution_time_seconds": 3.6534738540649414,
+      "execution_time_seconds": 3.8205208778381348,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": null,
-      "hash_calculation_method": "unavailable",
+      "output_hash": "4ebe7187905ce621ac3d0b224128f828c15b71c7e9c85aeb64adf25514fa6462",
+      "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 0,
       "window_function_count": 1,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
+      "query_id": "01c25641-0307-be83-001d-93430007d092",
       "tags": [
         "staging",
         "pipeline_a"
@@ -84,17 +87,18 @@
       "model_type": "table",
       "model_layer": "staging",
       "status": "success",
-      "execution_time_seconds": 5.22140645980835,
+      "execution_time_seconds": 4.306445360183716,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": null,
-      "hash_calculation_method": "unavailable",
+      "output_hash": "3a0c288816c5f7e5f3f3f25aedc3af486cc243c744f2b0e7ab702ea8b701a08d",
+      "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 0,
       "window_function_count": 0,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
+      "query_id": "01c25642-0307-be90-001d-93430007e0ba",
       "tags": [
         "staging",
         "pipeline_a"
@@ -103,7 +107,7 @@
     }
   ],
   "summary": {
-    "total_execution_time_seconds": 18.606444120407104,
+    "total_execution_time_seconds": 16.949452877044678,
     "total_models_processed": 4,
     "models_with_errors": 0,
     "models_with_incomplete_data": 0,
@@ -111,40 +115,18 @@
     "total_bytes_scanned": 2000,
     "total_estimated_credits": 0.0,
     "total_estimated_cost_usd": 0.0,
-    "average_execution_time_seconds": 4.651611030101776,
+    "average_execution_time_seconds": 4.237363219261169,
     "average_model_complexity": 1.25,
-    "data_quality_score": 0,
-    "hash_validation_success_rate": 0.0
+    "data_quality_score": 100,
+    "hash_validation_success_rate": 1.0
   },
-  "data_quality_flags": [
+  "data_quality_flags": [],
+  "warnings_and_errors": [
     {
-      "model_name": "int_cashflow_aggregated",
-      "flag_type": "missing_hash",
-      "severity": "warning",
-      "message": "Model int_cashflow_aggregated could not be hashed",
-      "timestamp": "2026-02-11T00:58:22.563095"
-    },
-    {
-      "model_name": "int_portfolio_attributes",
-      "flag_type": "missing_hash",
-      "severity": "warning",
-      "message": "Model int_portfolio_attributes could not be hashed",
-      "timestamp": "2026-02-11T00:58:22.563095"
-    },
-    {
-      "model_name": "stg_cashflows",
-      "flag_type": "missing_hash",
-      "severity": "warning",
-      "message": "Model stg_cashflows could not be hashed",
-      "timestamp": "2026-02-11T00:58:22.563095"
-    },
-    {
-      "model_name": "stg_portfolios",
-      "flag_type": "missing_hash",
-      "severity": "warning",
-      "message": "Model stg_portfolios could not be hashed",
-      "timestamp": "2026-02-11T00:58:22.563095"
+      "level": "info",
+      "message": "Bytes scanned fetched from Snowflake QUERY_HISTORY for accurate cost analysis.",
+      "source": "KPI 2 - Work Metrics",
+      "timestamp": "2026-02-11T11:34:54.059588"
     }
-  ],
-  "warnings_and_errors": []
+  ]
 }

@@ -481,6 +481,27 @@ def schema_validator(
 # YAML/PROFILE PARSING
 # ============================================================================
 
+ENV_VAR_PATTERN = re.compile(
+    r"\{\{\s*env_var\(\s*'([^']+)'\s*(?:,\s*'([^']*)')?\s*\)\s*\}\}"
+)
+
+
+def _resolve_env_vars(value: Any) -> Any:
+    """Resolve dbt-style env_var() Jinja expressions in profiles.yml values."""
+    if isinstance(value, str):
+        def _replace(match: re.Match) -> str:
+            env_name = match.group(1)
+            default = match.group(2)
+            return os.getenv(env_name, default if default is not None else "")
+
+        return ENV_VAR_PATTERN.sub(_replace, value)
+    if isinstance(value, dict):
+        return {k: _resolve_env_vars(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_resolve_env_vars(v) for v in value]
+    return value
+
+
 def parse_profiles_yml(profile_name: str) -> Dict[str, str]:
     """
     Parse dbt's profiles.yml and extract Snowflake connection details.
@@ -576,14 +597,17 @@ def parse_profiles_yml(profile_name: str) -> Dict[str, str]:
         raise ConfigError(
             f"Profile '{profile_name}' configuration is not a dictionary"
         )
-    
+
+    # Resolve env_var() expressions to concrete values
+    config = _resolve_env_vars(config)
+
     # Extract required Snowflake connection fields
     required_fields = ["account", "user", "password", "warehouse", "database", "schema"]
     credentials = {}
     missing_fields = []
     
     for field in required_fields:
-        if field in config:
+        if field in config and config[field] not in (None, ""):
             credentials[field] = config[field]
         else:
             missing_fields.append(field)
@@ -707,7 +731,12 @@ def setup_logging(pipeline_name: str) -> logging.Logger:
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
     
-    # Console handler
+    # Console handler (force UTF-8 with replacement to avoid Windows encoding errors)
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setLevel(log_level)
     console_handler.setFormatter(formatter)
@@ -1683,6 +1712,122 @@ def calculate_output_hash(model_data: Dict[str, Any], database: str, schema: str
         if logger:
             logger.warning(f"Error calculating hash for {model_name}: {str(e)}")
         return None, data_source, "sha256"
+
+
+def get_query_metrics_from_history(
+    query_id: str,
+    credentials: Dict[str, str],
+    logger: Optional[logging.Logger] = None
+) -> Dict[str, Any]:
+    """
+    Fetch actual execution metrics from Snowflake QUERY_HISTORY.
+
+    Queries the Snowflake ACCOUNT_USAGE.QUERY_HISTORY view to retrieve
+    actual performance metrics for a specific query ID. This provides
+    more accurate data than estimations for bytes scanned, credits used,
+    and other execution details.
+
+    Args:
+        query_id (str): Snowflake query ID from adapter response
+        credentials (Dict[str, str]): Snowflake connection credentials with keys:
+            - account: Snowflake account identifier
+            - user: Username for authentication
+            - password: Password for authentication
+            - warehouse: Warehouse name (optional for system queries)
+        logger (Optional[logging.Logger]): Logger instance for debug/error messages
+
+    Returns:
+        Dict[str, Any]: Dictionary containing query metrics:
+            - bytes_scanned (int): Actual bytes scanned by the query
+            - rows_produced (int): Actual number of rows produced
+            - credits_used (float): Actual Snowflake credits consumed
+            - execution_time_ms (int): Total elapsed time in milliseconds
+            - warehouse_size (str): Warehouse size used (XS, S, M, L, etc.)
+            - compilation_time (int): Query compilation time in milliseconds
+            - execution_status (str): Query execution status (SUCCESS, FAILED, etc.)
+            - partitions_scanned (int): Number of micro-partitions scanned
+
+        Returns empty dict {} if query not found or error occurs.
+
+    Raises:
+        None: All exceptions are caught and logged. Empty dict returned on error.
+
+    Examples:
+        >>> from helpers import get_query_metrics_from_history, parse_profiles_yml
+        >>> creds = parse_profiles_yml('bain_capital')
+        >>> metrics = get_query_metrics_from_history(
+        ...     query_id='01c253ce-0307-b61a-001d-93430006a1e2',
+        ...     credentials=creds
+        ... )
+        >>> print(f"Bytes scanned: {metrics['bytes_scanned']:,}")
+        Bytes scanned: 1,234,567
+
+    Notes:
+        - Requires IMPORTED PRIVILEGES on SNOWFLAKE database
+        - QUERY_HISTORY data may have a few minutes delay
+        - Only queries from the last 365 days are available in ACCOUNT_USAGE
+    """
+    try:
+        import snowflake.connector
+    except ImportError:
+        if logger:
+            logger.warning("snowflake-connector-python not installed, query history unavailable")
+        return {}
+
+    try:
+        # Connect to Snowflake system database
+        conn = snowflake.connector.connect(
+            account=credentials.get("account"),
+            user=credentials.get("user"),
+            password=credentials.get("password"),
+            warehouse=credentials.get("warehouse"),  # Optional for system queries
+            database="SNOWFLAKE",  # System database
+            schema="ACCOUNT_USAGE"
+        )
+
+        # Query ACCOUNT_USAGE.QUERY_HISTORY for metrics
+        query = """
+        SELECT
+            BYTES_SCANNED,
+            ROWS_PRODUCED,
+            CREDITS_USED_CLOUD_SERVICES as CREDITS_USED,
+            TOTAL_ELAPSED_TIME as EXECUTION_TIME_MS,
+            WAREHOUSE_SIZE,
+            COMPILATION_TIME,
+            EXECUTION_STATUS,
+            PARTITIONS_SCANNED
+        FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY
+        WHERE QUERY_ID = %s
+        LIMIT 1
+        """
+
+        cursor = conn.cursor()
+        cursor.execute(query, (query_id,))
+        result = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if not result:
+            if logger:
+                logger.debug(f"Query {query_id} not found in QUERY_HISTORY (may not be available yet)")
+            return {}
+
+        # Parse results into dictionary
+        return {
+            'bytes_scanned': int(result[0]) if result[0] is not None else 0,
+            'rows_produced': int(result[1]) if result[1] is not None else 0,
+            'credits_used': float(result[2]) if result[2] is not None else 0.0,
+            'execution_time_ms': int(result[3]) if result[3] is not None else 0,
+            'warehouse_size': result[4],
+            'compilation_time': int(result[5]) if result[5] is not None else 0,
+            'execution_status': result[6],
+            'partitions_scanned': int(result[7]) if result[7] is not None else 0
+        }
+
+    except Exception as e:
+        if logger:
+            logger.error(f"Error fetching query history for {query_id}: {str(e)}")
+        return {}
 
 
 # ============================================================================
