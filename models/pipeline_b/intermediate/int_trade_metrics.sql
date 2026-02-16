@@ -3,7 +3,7 @@
 -- Purpose: Calculate trade-level metrics and PnL
 
 {{ config(
-    materialized='view',
+    materialized='table',
     tags=['intermediate', 'pipeline_b'],
     meta={'pipeline': 'b', 'layer': 'intermediate'}
 ) }}
