@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0.0",
   "metadata": {
-    "timestamp": "2026-02-11T11:34:54.059588",
+    "timestamp": "2026-02-17T16:14:27.756379",
     "pipeline_name": "pipeline_a",
     "models_processed": 4,
-    "total_duration_seconds": 16.949452877044678,
+    "total_duration_seconds": 16.943817853927612,
     "dbt_artifacts_version": "https://schemas.getdbt.com/dbt/run-results/v6.json",
     "dbt_version": "1.11.4"
   },
@@ -15,7 +15,7 @@
       "model_type": "table",
       "model_layer": "intermediate",
       "status": "success",
-      "execution_time_seconds": 5.308936595916748,
+      "execution_time_seconds": 5.624154806137085,
       "rows_produced": 1,
       "bytes_scanned": 500,
       "output_hash": "ee39b1f8f1420f1f0adbadcc929bdb0c4f34abf039ab3260b231105816cab6a8",
@@ -26,7 +26,7 @@
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
-      "query_id": "01c25642-0307-bc54-001d-93430008305a",
+      "query_id": "01c27919-0107-c9f9-001d-9343000b81f2",
       "tags": [
         "intermediate",
         "pipeline_a"
@@ -39,10 +39,10 @@
       "model_type": "table",
       "model_layer": "intermediate",
       "status": "success",
-      "execution_time_seconds": 3.513550043106079,
+      "execution_time_seconds": 4.6981871128082275,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": "3d2b9f72d0c0431875e4bc7dd183a28a576aa37d69330307b305c148a33044aa",
+      "output_hash": "12541540c7dfc4c2b5c2d5a0948ebe627ec1b5d630e69c2696c4e035c3ff1b14",
       "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 2,
@@ -50,7 +50,7 @@
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
       "materialization": "table",
-      "query_id": "01c25642-0307-be24-001d-93430008108a",
+      "query_id": "01c27919-0107-c9f9-001d-9343000b81f6",
       "tags": [
         "intermediate",
         "pipeline_a"
@@ -60,21 +60,21 @@
     {
       "model_name": "stg_cashflows",
       "model_id": "model.bain_capital_portfolio_analytics.stg_cashflows",
-      "model_type": "table",
+      "model_type": "view",
       "model_layer": "staging",
       "status": "success",
-      "execution_time_seconds": 3.8205208778381348,
+      "execution_time_seconds": 3.5630133152008057,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": "4ebe7187905ce621ac3d0b224128f828c15b71c7e9c85aeb64adf25514fa6462",
+      "output_hash": "887dc19e3013ef50fc01d0f3320f98f12e1bc91369fdb26c58befbaea7cdafd6",
       "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 0,
       "window_function_count": 1,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
-      "materialization": "table",
-      "query_id": "01c25641-0307-be83-001d-93430007d092",
+      "materialization": "view",
+      "query_id": "01c27919-0107-cf02-001d-9343000c307e",
       "tags": [
         "staging",
         "pipeline_a"
@@ -84,21 +84,21 @@
     {
       "model_name": "stg_portfolios",
       "model_id": "model.bain_capital_portfolio_analytics.stg_portfolios",
-      "model_type": "table",
+      "model_type": "view",
       "model_layer": "staging",
       "status": "success",
-      "execution_time_seconds": 4.306445360183716,
+      "execution_time_seconds": 3.058462619781494,
       "rows_produced": 1,
       "bytes_scanned": 500,
-      "output_hash": "3a0c288816c5f7e5f3f3f25aedc3af486cc243c744f2b0e7ab702ea8b701a08d",
+      "output_hash": "f923b29d8dc1a8cc91d0a36332084c62440d23dca7478c6569ebb3bdfadb60fb",
       "hash_calculation_method": "snowflake_query",
       "join_count": 0,
       "cte_count": 0,
       "window_function_count": 0,
       "estimated_credits": 0.0,
       "estimated_cost_usd": 0.0,
-      "materialization": "table",
-      "query_id": "01c25642-0307-be90-001d-93430007e0ba",
+      "materialization": "view",
+      "query_id": "01c27919-0107-cd9e-001d-9343000c10da",
       "tags": [
         "staging",
         "pipeline_a"
@@ -107,7 +107,7 @@
     }
   ],
   "summary": {
-    "total_execution_time_seconds": 16.949452877044678,
+    "total_execution_time_seconds": 16.943817853927612,
     "total_models_processed": 4,
     "models_with_errors": 0,
     "models_with_incomplete_data": 0,
@@ -115,18 +115,48 @@
     "total_bytes_scanned": 2000,
     "total_estimated_credits": 0.0,
     "total_estimated_cost_usd": 0.0,
-    "average_execution_time_seconds": 4.237363219261169,
+    "average_execution_time_seconds": 4.235954463481903,
     "average_model_complexity": 1.25,
     "data_quality_score": 100,
-    "hash_validation_success_rate": 1.0
+    "hash_validation_success_rate": 1.0,
+    "execution_time_statistics": {
+      "mean": 4.236,
+      "median": 4.1306,
+      "stddev": 1.1518,
+      "min": 3.0585,
+      "max": 5.6242,
+      "high_variance": true
+    },
+    "layer_breakdown": {
+      "intermediate": {
+        "model_count": 2,
+        "total_execution_time": 10.3223,
+        "avg_execution_time": 5.1612,
+        "avg_complexity": 2.0,
+        "total_rows_produced": 2
+      },
+      "staging": {
+        "model_count": 2,
+        "total_execution_time": 6.6215,
+        "avg_execution_time": 3.3107,
+        "avg_complexity": 0.5,
+        "total_rows_produced": 2
+      }
+    }
   },
   "data_quality_flags": [],
   "warnings_and_errors": [
     {
+      "level": "warning",
+      "message": "High execution time variance detected: stddev (1.15s) > 10% of mean (4.24s). Consider closing other programs and re-running, or increasing iterations.",
+      "source": "Statistical Analysis",
+      "timestamp": "2026-02-17T16:14:27.756379"
+    },
+    {
       "level": "info",
       "message": "Bytes scanned fetched from Snowflake QUERY_HISTORY for accurate cost analysis.",
       "source": "KPI 2 - Work Metrics",
-      "timestamp": "2026-02-11T11:34:54.059588"
+      "timestamp": "2026-02-17T16:14:27.756379"
     }
   ]
 }

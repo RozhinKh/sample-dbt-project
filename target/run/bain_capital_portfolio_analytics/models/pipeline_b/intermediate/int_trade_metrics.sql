@@ -1,11 +1,12 @@
 
-  create or replace   view BAIN_ANALYTICS.DEV.int_trade_metrics
   
-  
-  
-  
-  as (
-    -- Pipeline B: Intermediate Layer
+    
+
+create or replace transient table BAIN_ANALYTICS.DEV.int_trade_metrics
+    
+    
+    
+    as (-- Pipeline B: Intermediate Layer
 -- int_trade_metrics.sql
 -- Purpose: Calculate trade-level metrics and PnL
 
@@ -13,6 +14,25 @@
 
 with enriched as (
     select * from BAIN_ANALYTICS.DEV.int_trades_enriched
+),
+
+cast_enriched as (
+    select
+        trade_id,
+        portfolio_id,
+        security_id,
+        broker_id,
+        trade_date,
+        trade_type,
+        cast(quantity as numeric(18, 2)) as quantity,
+        cast(price as numeric(18, 2)) as price,
+        cast(commission as numeric(18, 2)) as commission,
+        ticker,
+        security_name,
+        asset_class,
+        sector,
+        broker_name
+    from enriched
 ),
 
 trade_values as (
@@ -38,7 +58,7 @@ trade_values as (
             when trade_type = 'SELL' then quantity * price
             else 0
         end, 2) as position_impact
-    from enriched
+    from cast_enriched
 )
 
 select
@@ -60,5 +80,8 @@ select
     net_trade_value,
     position_impact
 from trade_values
-  );
+    )
+;
 
+
+  

@@ -36,6 +36,7 @@ import os
 import re
 import hashlib
 import argparse
+import statistics
 from pathlib import Path
 from typing import Dict, Any, List, Tuple, Optional
 from datetime import datetime
@@ -539,6 +540,56 @@ def build_report(
     # Calculate summary statistics
     avg_exec_time = total_exec_time / len(pipeline_models) if pipeline_models else 0.0
     
+    # Calculate execution time statistics (mean, median, stddev, min, max)
+    exec_times = [m["execution_time_seconds"] for m in models_array if m.get("execution_time_seconds") is not None]
+    if len(exec_times) >= 2:
+        median_exec_time = statistics.median(exec_times)
+        stddev_exec_time = statistics.stdev(exec_times)
+        min_exec_time = min(exec_times)
+        max_exec_time = max(exec_times)
+    elif len(exec_times) == 1:
+        median_exec_time = exec_times[0]
+        stddev_exec_time = 0.0
+        min_exec_time = exec_times[0]
+        max_exec_time = exec_times[0]
+    else:
+        median_exec_time = 0.0
+        stddev_exec_time = 0.0
+        min_exec_time = 0.0
+        max_exec_time = 0.0
+
+    # Detect high variance (stddev > 10% of mean)
+    high_variance = False
+    if avg_exec_time > 0 and stddev_exec_time > 0.1 * avg_exec_time:
+        high_variance = True
+        warnings_and_errors.append({
+            "level": "warning",
+            "message": f"High execution time variance detected: stddev ({stddev_exec_time:.2f}s) > 10% of mean ({avg_exec_time:.2f}s). Consider closing other programs and re-running, or increasing iterations.",
+            "source": "Statistical Analysis",
+            "timestamp": datetime.now().isoformat()
+        })
+
+    # Calculate layer breakdown (cross-reference complexity with execution metrics)
+    layer_stats = {}
+    for m in models_array:
+        layer = m.get("model_layer", "unknown")
+        if layer not in layer_stats:
+            layer_stats[layer] = {"models": 0, "total_time": 0.0, "total_complexity": 0, "total_rows": 0}
+        layer_stats[layer]["models"] += 1
+        layer_stats[layer]["total_time"] += m.get("execution_time_seconds", 0.0)
+        layer_stats[layer]["total_complexity"] += m.get("join_count", 0) + m.get("cte_count", 0) + m.get("window_function_count", 0)
+        layer_stats[layer]["total_rows"] += m.get("rows_produced", 0)
+
+    layer_breakdown = {}
+    for layer, stats in layer_stats.items():
+        layer_breakdown[layer] = {
+            "model_count": stats["models"],
+            "total_execution_time": round(stats["total_time"], 4),
+            "avg_execution_time": round(stats["total_time"] / stats["models"], 4),
+            "avg_complexity": round(stats["total_complexity"] / stats["models"], 4),
+            "total_rows_produced": stats["total_rows"]
+        }
+
     # Calculate average complexity
     total_complexity = sum(
         m.get("join_count", 0) + m.get("cte_count", 0) + m.get("window_function_count", 0)
@@ -631,7 +682,16 @@ def build_report(
             "average_execution_time_seconds": avg_exec_time,
             "average_model_complexity": avg_complexity,
             "data_quality_score": data_quality_score,
-            "hash_validation_success_rate": hash_success_rate
+            "hash_validation_success_rate": hash_success_rate,
+            "execution_time_statistics": {
+                "mean": round(avg_exec_time, 4),
+                "median": round(median_exec_time, 4),
+                "stddev": round(stddev_exec_time, 4),
+                "min": round(min_exec_time, 4),
+                "max": round(max_exec_time, 4),
+                "high_variance": high_variance
+            },
+            "layer_breakdown": layer_breakdown
         },
         "data_quality_flags": data_quality_flags,
         "warnings_and_errors": warnings_and_errors

@@ -1,0 +1,400 @@
+{
+  "schema_version": "1.0.0",
+  "metadata": {
+    "timestamp": "2026-02-11T01:23:31.530143",
+    "pipeline_name": "pipeline_b",
+    "models_processed": 12,
+    "total_duration_seconds": 0.0,
+    "dbt_artifacts_version": "https://schemas.getdbt.com/dbt/run-results/v6.json",
+    "dbt_version": "1.11.4"
+  },
+  "models": [
+    {
+      "model_name": "int_security_performance",
+      "model_id": "model.bain_capital_portfolio_analytics.int_security_performance",
+      "model_type": "view",
+      "model_layer": "intermediate",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "intermediate",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "int_trades_enriched",
+      "model_id": "model.bain_capital_portfolio_analytics.int_trades_enriched",
+      "model_type": "view",
+      "model_layer": "intermediate",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 2,
+      "cte_count": 2,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "intermediate",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "int_trade_execution_analysis",
+      "model_id": "model.bain_capital_portfolio_analytics.int_trade_execution_analysis",
+      "model_type": "view",
+      "model_layer": "intermediate",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 1,
+      "cte_count": 2,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "intermediate",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "int_trade_metrics",
+      "model_id": "model.bain_capital_portfolio_analytics.int_trade_metrics",
+      "model_type": "view",
+      "model_layer": "intermediate",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "intermediate",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "int_trade_summary",
+      "model_id": "model.bain_capital_portfolio_analytics.int_trade_summary",
+      "model_type": "view",
+      "model_layer": "intermediate",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "intermediate",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "fact_trades",
+      "model_id": "model.bain_capital_portfolio_analytics.fact_trades",
+      "model_type": "view",
+      "model_layer": "marts",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "marts",
+        "pipeline_b",
+        "fact"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "report_trade_performance",
+      "model_id": "model.bain_capital_portfolio_analytics.report_trade_performance",
+      "model_type": "view",
+      "model_layer": "marts",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "marts",
+        "pipeline_b",
+        "report"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "report_trading_performance",
+      "model_id": "model.bain_capital_portfolio_analytics.report_trading_performance",
+      "model_type": "view",
+      "model_layer": "marts",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "marts",
+        "pipeline_b",
+        "report"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "stg_brokers",
+      "model_id": "model.bain_capital_portfolio_analytics.stg_brokers",
+      "model_type": "view",
+      "model_layer": "staging",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "staging",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "stg_market_prices",
+      "model_id": "model.bain_capital_portfolio_analytics.stg_market_prices",
+      "model_type": "view",
+      "model_layer": "staging",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "staging",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "stg_securities",
+      "model_id": "model.bain_capital_portfolio_analytics.stg_securities",
+      "model_type": "view",
+      "model_layer": "staging",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "staging",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    },
+    {
+      "model_name": "stg_trades",
+      "model_id": "model.bain_capital_portfolio_analytics.stg_trades",
+      "model_type": "view",
+      "model_layer": "staging",
+      "status": "not_executed",
+      "execution_time_seconds": 0.0,
+      "rows_produced": 0,
+      "bytes_scanned": 0,
+      "output_hash": null,
+      "hash_calculation_method": "unavailable",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "estimated_credits": 0.0,
+      "estimated_cost_usd": 0.0,
+      "materialization": "view",
+      "tags": [
+        "staging",
+        "pipeline_b"
+      ],
+      "kpi_data_complete": true
+    }
+  ],
+  "summary": {
+    "total_execution_time_seconds": 0.0,
+    "total_models_processed": 12,
+    "models_with_errors": 0,
+    "models_with_incomplete_data": 0,
+    "total_rows_produced": 0,
+    "total_bytes_scanned": 0,
+    "total_estimated_credits": 0.0,
+    "total_estimated_cost_usd": 0.0,
+    "average_execution_time_seconds": 0.0,
+    "average_model_complexity": 0.9166666666666666,
+    "data_quality_score": 0,
+    "hash_validation_success_rate": 0.0
+  },
+  "data_quality_flags": [
+    {
+      "model_name": "int_security_performance",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model int_security_performance produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "int_trades_enriched",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model int_trades_enriched produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "int_trade_execution_analysis",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model int_trade_execution_analysis produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "int_trade_metrics",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model int_trade_metrics produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "int_trade_summary",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model int_trade_summary produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "fact_trades",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model fact_trades produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "report_trade_performance",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model report_trade_performance produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "report_trading_performance",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model report_trading_performance produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "stg_brokers",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model stg_brokers produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "stg_market_prices",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model stg_market_prices produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "stg_securities",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model stg_securities produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    },
+    {
+      "model_name": "stg_trades",
+      "flag_type": "zero_rows",
+      "severity": "info",
+      "message": "Model stg_trades produced zero rows",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    }
+  ],
+  "warnings_and_errors": [
+    {
+      "level": "warning",
+      "message": "Data equivalence validation unavailable: Output hash calculation requires Snowflake query access. Without hash validation, you cannot verify that optimized code produces identical results to baseline code.",
+      "source": "KPI 3 - Data Equivalence",
+      "timestamp": "2026-02-11T01:23:31.530143"
+    }
+  ]
+}

@@ -1,12 +1,11 @@
 
+  create or replace   view BAIN_ANALYTICS.DEV.stg_portfolios
   
-    
-
-create or replace transient table BAIN_ANALYTICS.DEV.stg_portfolios
-    
-    
-    
-    as (-- Pipeline A: Staging Layer
+  
+  
+  
+  as (
+    -- Pipeline A: Staging Layer
 -- stg_portfolios.sql
 -- Purpose: Clean and standardize portfolio dimension data
 -- Models downstream: 1 (int_portfolio_attributes)
@@ -22,8 +21,5 @@ select
     current_timestamp() as dbt_loaded_at
 from BAIN_ANALYTICS.DEV.sample_portfolios
 where status = 'ACTIVE'
-    )
-;
+  );
 
-
-  

@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-02-11T19:29:51.907131",
+  "baseline_path": "benchmark/pipeline_a/baseline/report.json",
+  "candidate_path": "benchmark/pipeline_a/candidate/report.json",
+  "baseline_valid": true,
+  "candidate_valid": true,
+  "baseline_errors": [],
+  "candidate_errors": [],
+  "model_consistency_warnings": [],
+  "kpi_field_warnings": [],
+  "overall_status": "SUCCESS",
+  "comparison_summary": {
+    "total_models": 4,
+    "improved_count": 0,
+    "improved_percent": 0.0,
+    "regressed_count": 0,
+    "regressed_percent": 0.0,
+    "neutral_count": 0,
+    "neutral_percent": 0.0,
+    "total_cost_delta": 0.0,
+    "avg_improvement_percent": 0.0
+  },
+  "comparison_rows_count": 16,
+  "analysis_report_valid": true,
+  "analysis_report_errors": [],
+  "analysis_report_path": "benchmark/pipeline_a/analysis.json",
+  "execution_time_seconds": 0.01,
+  "bottleneck_count": 0,
+  "recommendation_count": 0
+}

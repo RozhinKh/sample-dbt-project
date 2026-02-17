@@ -263,6 +263,78 @@
           "minimum": 0,
           "maximum": 1,
           "examples": [0.95]
+        },
+        "execution_time_statistics": {
+          "type": "object",
+          "description": "Statistical distribution of execution times across all models",
+          "additionalProperties": false,
+          "properties": {
+            "mean": {
+              "type": "number",
+              "description": "Mean execution time in seconds",
+              "minimum": 0
+            },
+            "median": {
+              "type": "number",
+              "description": "Median execution time in seconds",
+              "minimum": 0
+            },
+            "stddev": {
+              "type": "number",
+              "description": "Standard deviation of execution times in seconds",
+              "minimum": 0
+            },
+            "min": {
+              "type": "number",
+              "description": "Minimum execution time in seconds",
+              "minimum": 0
+            },
+            "max": {
+              "type": "number",
+              "description": "Maximum execution time in seconds",
+              "minimum": 0
+            },
+            "high_variance": {
+              "type": "boolean",
+              "description": "True if stddev > 10% of mean, indicating unreliable benchmark"
+            }
+          }
+        },
+        "layer_breakdown": {
+          "type": "object",
+          "description": "Per-layer execution and complexity breakdown (staging, intermediate, marts)",
+          "additionalProperties": {
+            "type": "object",
+            "description": "Statistics for a single model layer",
+            "additionalProperties": false,
+            "properties": {
+              "model_count": {
+                "type": "integer",
+                "description": "Number of models in this layer",
+                "minimum": 0
+              },
+              "total_execution_time": {
+                "type": "number",
+                "description": "Total execution time for all models in this layer",
+                "minimum": 0
+              },
+              "avg_execution_time": {
+                "type": "number",
+                "description": "Average execution time per model in this layer",
+                "minimum": 0
+              },
+              "avg_complexity": {
+                "type": "number",
+                "description": "Average complexity (joins + CTEs + window functions) per model",
+                "minimum": 0
+              },
+              "total_rows_produced": {
+                "type": "integer",
+                "description": "Total rows produced by all models in this layer",
+                "minimum": 0
+              }
+            }
+          }
         }
       }
     },
