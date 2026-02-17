@@ -1,0 +1,247 @@
+{
+  "timestamp": "2026-02-17T17:08:57.067743",
+  "baseline_path": "benchmark/pipeline_c/baseline/report.json",
+  "candidate_path": "benchmark/pipeline_c/candidate/report.json",
+  "baseline_valid": true,
+  "candidate_valid": false,
+  "baseline_errors": [],
+  "candidate_errors": ["No candidate report generated yet — optimizations pending"],
+  "model_consistency_warnings": [],
+  "kpi_field_warnings": [],
+  "overall_status": "BASELINE_ONLY",
+  "comparison_summary": {
+    "total_models": 26,
+    "improved_count": 0,
+    "improved_percent": 0.0,
+    "regressed_count": 0,
+    "regressed_percent": 0.0,
+    "neutral_count": 0,
+    "neutral_percent": 0.0,
+    "total_cost_delta": 0.0,
+    "avg_improvement_percent": 0.0
+  },
+  "comparison_rows_count": 0,
+  "analysis_report_valid": true,
+  "analysis_report_errors": [],
+  "analysis_report_path": "benchmark/pipeline_c/analysis.json",
+  "execution_time_seconds": 104.04,
+  "bottleneck_count": 4,
+  "recommendation_count": 4,
+  "phase": "phase_1_baseline_analysis",
+  "baseline_summary": {
+    "total_models": 26,
+    "total_execution_time_seconds": 104.04,
+    "average_execution_time_seconds": 4.0016,
+    "execution_time_statistics": {
+      "mean": 4.0016,
+      "median": 3.9248,
+      "stddev": 0.6693,
+      "min": 3.2424,
+      "max": 5.5855,
+      "high_variance": true,
+      "variance_note": "stddev (0.67s) is 16.7% of mean. Timing deltas below 0.5s should be treated as noise on this dataset."
+    },
+    "layer_breakdown": {
+      "intermediate": {
+        "model_count": 13,
+        "total_execution_time": 51.29,
+        "avg_execution_time": 3.95,
+        "avg_complexity": 4.15,
+        "total_rows_produced": 13
+      },
+      "marts": {
+        "model_count": 8,
+        "total_execution_time": 33.25,
+        "avg_execution_time": 4.16,
+        "avg_complexity": 0.88,
+        "total_rows_produced": 51
+      },
+      "staging": {
+        "model_count": 5,
+        "total_execution_time": 19.50,
+        "avg_execution_time": 3.90,
+        "avg_complexity": 0.0,
+        "total_rows_produced": 5
+      }
+    },
+    "data_quality_score": 100,
+    "hash_validation_success_rate": 1.0
+  },
+  "top_5_slowest_models": [
+    {
+      "rank": 1,
+      "model_name": "int_portfolio_drawdown",
+      "execution_time_seconds": 5.5855,
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 1,
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_drawdown.sql"
+    },
+    {
+      "rank": 2,
+      "model_name": "fact_portfolio_performance",
+      "execution_time_seconds": 5.3691,
+      "model_layer": "marts",
+      "materialization": "table",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "sql_path": "models/pipeline_c/marts/fact_portfolio_performance.sql"
+    },
+    {
+      "rank": 3,
+      "model_name": "int_portfolio_returns",
+      "execution_time_seconds": 4.9614,
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 5,
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_returns.sql"
+    },
+    {
+      "rank": 4,
+      "model_name": "report_performance_drivers",
+      "execution_time_seconds": 4.8000,
+      "model_layer": "marts",
+      "materialization": "view",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "sql_path": "models/pipeline_c/marts/report_performance_drivers.sql"
+    },
+    {
+      "rank": 5,
+      "model_name": "report_portfolio_risk_analysis",
+      "execution_time_seconds": 4.7754,
+      "model_layer": "marts",
+      "materialization": "view",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "sql_path": "models/pipeline_c/marts/report_portfolio_risk_analysis.sql"
+    }
+  ],
+  "bottlenecks": [
+    {
+      "id": "B1",
+      "model_name": "int_portfolio_returns",
+      "priority": "high",
+      "type": "repeated_window_function",
+      "execution_time_seconds": 4.9614,
+      "description": "The lag(nav_usd) OVER (PARTITION BY portfolio_id ORDER BY valuation_date) expression is repeated 4 times within a single SELECT clause (lines 20, 22, 23, 24). Snowflake may optimize this but it is redundant and obscures intent.",
+      "downstream_impact": [
+        "int_portfolio_drawdown",
+        "fact_portfolio_performance",
+        "int_risk_metrics",
+        "int_rolling_volatility",
+        "int_portfolio_analysis_advanced",
+        "int_portfolio_drawdown"
+      ],
+      "root_cause": "Single CTE computes lag() inline multiple times instead of computing prev_nav once and referencing it. As a view, the full computation is re-run by every downstream model that references it.",
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_returns.sql"
+    },
+    {
+      "id": "B2",
+      "model_name": "int_portfolio_drawdown",
+      "priority": "high",
+      "type": "view_chain_depth",
+      "execution_time_seconds": 5.5855,
+      "description": "View-on-view chain: this model calls int_portfolio_returns via ref(), which is also a view with 5 window functions. At query time Snowflake must evaluate the full view chain (stg_valuations -> int_portfolio_returns -> int_portfolio_drawdown) plus an ordered accumulation window (MAX() OVER ORDER BY) on top.",
+      "downstream_impact": [],
+      "root_cause": "int_portfolio_returns is materialized as a view. Every downstream view re-evaluates the entire upstream window function chain. The MAX() OVER (PARTITION BY portfolio_id ORDER BY valuation_date) is an ordered running-max requiring sequential row accumulation per partition.",
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_drawdown.sql"
+    },
+    {
+      "id": "B3",
+      "model_name": "fact_portfolio_performance",
+      "priority": "high",
+      "type": "double_view_evaluation",
+      "execution_time_seconds": 5.3691,
+      "description": "Table materialization joining int_portfolio_returns (view, 5 window fns) LEFT JOIN int_risk_metrics (view, 4 window fns). Both views are fully re-evaluated at build time, duplicating upstream window function work.",
+      "downstream_impact": [],
+      "root_cause": "Neither int_portfolio_returns nor int_risk_metrics is materialized as a table. At build time, Snowflake evaluates both view chains in full to complete the join.",
+      "sql_path": "models/pipeline_c/marts/fact_portfolio_performance.sql"
+    },
+    {
+      "id": "B4",
+      "model_name": "int_position_returns",
+      "priority": "medium",
+      "type": "repeated_window_function",
+      "execution_time_seconds": 3.5524,
+      "description": "The lag(market_value_usd) OVER (PARTITION BY security_id ORDER BY position_date) expression is repeated 4 times in the returns CTE (lines 41-46). Identical antipattern to B1.",
+      "downstream_impact": [
+        "int_position_attribution",
+        "int_performance_attribution_detailed"
+      ],
+      "root_cause": "Same pattern as int_portfolio_returns — prev_value is not extracted into its own CTE step before being referenced in multiple expressions.",
+      "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
+    }
+  ],
+  "recommendations": [
+    {
+      "id": "R1",
+      "targets_bottleneck": "B1",
+      "model_name": "int_portfolio_returns",
+      "priority": "high",
+      "action": "change_materialization",
+      "description": "Change materialized='view' to materialized='table'. This is the single highest-leverage change: all downstream models (int_portfolio_drawdown, fact_portfolio_performance, int_risk_metrics chain) will read from a pre-computed table instead of re-evaluating 5 window functions each time.",
+      "hash_impact": "None — output data is identical, only storage strategy changes.",
+      "expected_improvement": "Eliminates repeated view-chain evaluation across 6+ downstream models. Expected savings per downstream model: ~1-2s at current data scale; larger at production scale.",
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_returns.sql"
+    },
+    {
+      "id": "R2",
+      "targets_bottleneck": "B1",
+      "model_name": "int_portfolio_returns",
+      "priority": "medium",
+      "action": "refactor_sql",
+      "description": "Extract lag(nav_usd) into a separate CTE step so it is computed once and referenced by name in subsequent expressions (prev_nav, daily_pnl, daily_return_pct). Eliminates 4 redundant window calls in the same SELECT.",
+      "hash_impact": "None — output data is identical.",
+      "expected_improvement": "Minor on small data. Significant at scale where window functions are expensive. Also improves readability and reduces risk of divergence if window spec changes.",
+      "sql_path": "models/pipeline_c/intermediate/int_portfolio_returns.sql"
+    },
+    {
+      "id": "R3",
+      "targets_bottleneck": "B4",
+      "model_name": "int_position_returns",
+      "priority": "medium",
+      "action": "refactor_sql",
+      "description": "Same lag() deduplication as R2: extract lag(market_value_usd) into a prev_value CTE step and reference it in daily_pnl and daily_return_pct expressions.",
+      "hash_impact": "None — output data is identical.",
+      "expected_improvement": "Minor on small data. Consistent pattern with int_portfolio_returns fix.",
+      "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
+    },
+    {
+      "id": "R4",
+      "targets_bottleneck": "B3",
+      "model_name": "fact_portfolio_performance",
+      "priority": "low",
+      "action": "depends_on_r1",
+      "description": "After R1 materializes int_portfolio_returns as a table, this model's join cost drops automatically — it reads from a physical table instead of re-evaluating the view. No SQL changes needed here.",
+      "hash_impact": "None.",
+      "expected_improvement": "Derived benefit from R1. Estimated 0.5-1.5s improvement at current scale.",
+      "sql_path": "models/pipeline_c/marts/fact_portfolio_performance.sql"
+    }
+  ],
+  "out_of_scope_findings": [
+    {
+      "model_name": "report_performance_drivers",
+      "execution_time_seconds": 4.8000,
+      "note": "Pure passthrough (SELECT ... FROM int_performance_attribution_detailed). Slowness is Snowflake view-chain compilation overhead. Cannot be meaningfully optimized without removing the view layer."
+    },
+    {
+      "model_name": "report_portfolio_risk_analysis",
+      "execution_time_seconds": 4.7754,
+      "note": "Pure passthrough (SELECT ... FROM int_portfolio_analysis_advanced). Same reason as above."
+    },
+    {
+      "model_name": "int_sector_allocation",
+      "execution_time_seconds": 3.2937,
+      "note": "Has a real antipattern (cast_enriched CTE scanned twice for two separate GROUP BYs). However it is near the fastest model in the pipeline — not a priority. Valid optimization for the agent to consider independently."
+    }
+  ],
+  "variance_warning": "high_variance flag is set (stddev=0.67s = 16.7% of mean=4.00s). Execution time deltas below 0.5s between baseline and candidate should not be treated as reliable signal. Re-run candidate at least twice if a result seems surprising."
+}
