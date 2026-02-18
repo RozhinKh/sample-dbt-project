@@ -25,9 +25,10 @@
   "analysis_report_errors": [],
   "analysis_report_path": "benchmark/pipeline_c/analysis.json",
   "execution_time_seconds": 104.04,
-  "bottleneck_count": 4,
-  "recommendation_count": 4,
+  "bottleneck_count": 5,
+  "recommendation_count": 5,
   "phase": "phase_1_baseline_analysis",
+  "profiling_report_path": "benchmark/pipeline_c/profiling_report.json",
   "baseline_summary": {
     "total_models": 26,
     "total_execution_time_seconds": 104.04,
@@ -138,7 +139,7 @@
         "int_risk_metrics",
         "int_rolling_volatility",
         "int_portfolio_analysis_advanced",
-        "int_portfolio_drawdown"
+        "report_executive_summary"
       ],
       "root_cause": "Single CTE computes lag() inline multiple times instead of computing prev_nav once and referencing it. As a view, the full computation is re-run by every downstream model that references it.",
       "sql_path": "models/pipeline_c/intermediate/int_portfolio_returns.sql"
@@ -168,15 +169,42 @@
     {
       "id": "B4",
       "model_name": "int_position_returns",
-      "priority": "medium",
+      "priority": "high",
       "type": "repeated_window_function",
       "execution_time_seconds": 3.5524,
       "description": "The lag(market_value_usd) OVER (PARTITION BY security_id ORDER BY position_date) expression is repeated 4 times in the returns CTE (lines 41-46). Identical antipattern to B1.",
       "downstream_impact": [
+        "int_performance_attribution_detailed",
         "int_position_attribution",
-        "int_performance_attribution_detailed"
+        "int_position_risk_decomposition",
+        "int_sector_performance_attribution",
+        "int_sector_rotation_analysis",
+        "fact_position_snapshot"
       ],
       "root_cause": "Same pattern as int_portfolio_returns — prev_value is not extracted into its own CTE step before being referenced in multiple expressions.",
+      "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
+    },
+    {
+      "id": "B5",
+      "model_name": "int_position_returns",
+      "priority": "high",
+      "type": "high_fan_out_view",
+      "execution_time_seconds": 3.5524,
+      "description": "Profiling reveals dependency_fan_out=6: six downstream models each independently re-evaluate this view. Total view waste = 3.55s × 6 = 21.31s. This is the second-largest source of redundant computation in the pipeline after B1 (int_portfolio_returns at 29.77s).",
+      "downstream_impact": [
+        "int_performance_attribution_detailed",
+        "int_position_attribution",
+        "int_position_risk_decomposition",
+        "int_sector_performance_attribution",
+        "int_sector_rotation_analysis",
+        "fact_position_snapshot"
+      ],
+      "root_cause": "Model is materialized as a view. At query time, all 6 downstream models re-evaluate the full SQL including the repeated lag() window functions. Materializing as a table eliminates 5 of these 6 evaluations (17.76s savings).",
+      "profiling_data": {
+        "dependency_fan_out": 6,
+        "estimated_total_view_cost_seconds": 21.3141,
+        "estimated_savings_seconds": 17.7617
+      },
       "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
     }
   ],
@@ -205,17 +233,28 @@
     },
     {
       "id": "R3",
+      "targets_bottleneck": "B5",
+      "model_name": "int_position_returns",
+      "priority": "high",
+      "action": "change_materialization",
+      "description": "Change materialized='view' to materialized='table'. Profiling shows dependency_fan_out=6 and 17.76s savings — the second-largest optimization opportunity after R1. All 6 downstream models will read from a pre-computed table.",
+      "hash_impact": "None — output data is identical, only storage strategy changes.",
+      "expected_improvement": "17.76s estimated savings. Eliminates 5 of 6 redundant re-evaluations of the repeated lag() window functions across the downstream chain.",
+      "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
+    },
+    {
+      "id": "R4_sql",
       "targets_bottleneck": "B4",
       "model_name": "int_position_returns",
       "priority": "medium",
       "action": "refactor_sql",
-      "description": "Same lag() deduplication as R2: extract lag(market_value_usd) into a prev_value CTE step and reference it in daily_pnl and daily_return_pct expressions.",
+      "description": "After R3 materializes int_position_returns, also deduplicate the repeated lag(market_value_usd) expression: extract it into a prev_value CTE step and reference it in daily_pnl and daily_return_pct. Combine with R3 in a single change.",
       "hash_impact": "None — output data is identical.",
-      "expected_improvement": "Minor on small data. Consistent pattern with int_portfolio_returns fix.",
+      "expected_improvement": "Minor on small data. Significant at production scale.",
       "sql_path": "models/pipeline_c/intermediate/int_position_returns.sql"
     },
     {
-      "id": "R4",
+      "id": "R5",
       "targets_bottleneck": "B3",
       "model_name": "fact_portfolio_performance",
       "priority": "low",
@@ -226,6 +265,33 @@
       "sql_path": "models/pipeline_c/marts/fact_portfolio_performance.sql"
     }
   ],
+  "profiling_cross_reference": {
+    "profiling_report_path": "benchmark/pipeline_c/profiling_report.json",
+    "generated_at": "2026-02-18T09:23:56",
+    "key_findings": [
+      {
+        "finding": "int_portfolio_returns is the single costliest view in the pipeline",
+        "data": "fan_out=6, estimated_total_view_cost=29.77s, estimated_savings=24.81s",
+        "confirms": "B1 and R1 — highest priority optimization"
+      },
+      {
+        "finding": "int_position_returns has equal fan_out to int_portfolio_returns",
+        "data": "fan_out=6, estimated_total_view_cost=21.31s, estimated_savings=17.76s",
+        "confirms": "B5 and R3 — profiling upgraded this from medium to high priority. Initial ranking by execution_time alone (rank #15, 3.55s) was misleading."
+      },
+      {
+        "finding": "Total pipeline view waste is 97.71s of 104.04s total execution time",
+        "data": "13 view-based intermediate models each re-evaluated by 1-6 downstream models",
+        "note": "Not all of this is recoverable — some re-evaluation is unavoidable — but R1 and R3 alone account for 42.57s of recoverable waste."
+      },
+      {
+        "finding": "compilation_time_ms unavailable — Snowflake QUERY_HISTORY connection failed",
+        "data": "0/26 QUERY_HISTORY hits. Self-time vs compilation-time breakdown not available.",
+        "note": "Retry profiler with Snowflake connection when stable: python benchmark/profiler.py --pipeline c"
+      }
+    ],
+    "priority_correction": "B4/int_position_returns was initially rated 'medium' based on execution_time rank (#15). Profiling reveals dependency_fan_out=6 makes it the #2 optimization target by total pipeline cost. Priority updated to 'high'."
+  },
   "out_of_scope_findings": [
     {
       "model_name": "report_performance_drivers",

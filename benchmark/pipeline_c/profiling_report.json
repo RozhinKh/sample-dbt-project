@@ -1,0 +1,1006 @@
+{
+  "schema_version": "1.0.0",
+  "timestamp": "2026-02-18T09:23:56.503042",
+  "pipeline": "pipeline_c",
+  "baseline_report_path": "benchmark\\pipeline_c\\baseline\\report.json",
+  "snowflake_query_history": {
+    "enabled": false,
+    "hits": 0,
+    "misses": 26,
+    "note": "QUERY_HISTORY unavailable \u2014 compilation_time_ms values are 0, self_time_ms equals execution_time_ms"
+  },
+  "summary": {
+    "total_models": 26,
+    "total_execution_time_seconds": 104.042,
+    "total_compilation_time_ms": 0,
+    "avg_compilation_time_ms": 0.0,
+    "total_estimated_view_waste_seconds": 97.7147,
+    "materialization_candidate_count": 13
+  },
+  "hottest_models": [
+    {
+      "rank": 1,
+      "model_name": "int_portfolio_drawdown",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "execution_time_seconds": 5.585504531860352,
+      "compilation_time_ms": 0,
+      "self_time_ms": 5585,
+      "window_function_count": 1,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 5.5855
+    },
+    {
+      "rank": 2,
+      "model_name": "fact_portfolio_performance",
+      "model_layer": "marts",
+      "materialization": "table",
+      "execution_time_seconds": 5.36909294128418,
+      "compilation_time_ms": 0,
+      "self_time_ms": 5369,
+      "window_function_count": 0,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "rank": 3,
+      "model_name": "int_portfolio_returns",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "execution_time_seconds": 4.961382150650024,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4961,
+      "window_function_count": 5,
+      "dependency_fan_out": 6,
+      "estimated_total_view_cost_seconds": 29.7683
+    },
+    {
+      "rank": 4,
+      "model_name": "report_performance_drivers",
+      "model_layer": "marts",
+      "materialization": "view",
+      "execution_time_seconds": 4.799997091293335,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4799,
+      "window_function_count": 0,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "rank": 5,
+      "model_name": "report_portfolio_risk_analysis",
+      "model_layer": "marts",
+      "materialization": "view",
+      "execution_time_seconds": 4.775380849838257,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4775,
+      "window_function_count": 0,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "rank": 6,
+      "model_name": "stg_portfolio_benchmarks",
+      "model_layer": "staging",
+      "materialization": "view",
+      "execution_time_seconds": 4.596080541610718,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4596,
+      "window_function_count": 0,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "rank": 7,
+      "model_name": "int_portfolio_analysis_advanced",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "execution_time_seconds": 4.385273218154907,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4385,
+      "window_function_count": 6,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 4.3853
+    },
+    {
+      "rank": 8,
+      "model_name": "report_executive_summary",
+      "model_layer": "marts",
+      "materialization": "view",
+      "execution_time_seconds": 4.228524446487427,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4228,
+      "window_function_count": 2,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "rank": 9,
+      "model_name": "int_position_enriched",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "execution_time_seconds": 4.03348708152771,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4033,
+      "window_function_count": 0,
+      "dependency_fan_out": 2,
+      "estimated_total_view_cost_seconds": 8.067
+    },
+    {
+      "rank": 10,
+      "model_name": "int_sector_rotation_analysis",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "execution_time_seconds": 3.9783432483673096,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3978,
+      "window_function_count": 2,
+      "dependency_fan_out": 0,
+      "estimated_total_view_cost_seconds": 0.0
+    }
+  ],
+  "materialization_candidates": [
+    {
+      "model_name": "int_portfolio_returns",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 4.961382150650024,
+      "dependency_fan_out": 6,
+      "estimated_total_view_cost_seconds": 29.7683,
+      "downstream_models": [
+        "int_portfolio_analysis_advanced",
+        "int_portfolio_drawdown",
+        "int_risk_metrics",
+        "int_rolling_volatility",
+        "fact_portfolio_performance",
+        "report_executive_summary"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 24.8069
+    },
+    {
+      "model_name": "int_position_returns",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.5523531436920166,
+      "dependency_fan_out": 6,
+      "estimated_total_view_cost_seconds": 21.3141,
+      "downstream_models": [
+        "int_performance_attribution_detailed",
+        "int_position_attribution",
+        "int_position_risk_decomposition",
+        "int_sector_performance_attribution",
+        "int_sector_rotation_analysis",
+        "fact_position_snapshot"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 17.7617
+    },
+    {
+      "model_name": "int_position_enriched",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 4.03348708152771,
+      "dependency_fan_out": 2,
+      "estimated_total_view_cost_seconds": 8.067,
+      "downstream_models": [
+        "int_position_returns",
+        "int_sector_allocation"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 4.0335
+    },
+    {
+      "model_name": "int_portfolio_drawdown",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 5.585504531860352,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 5.5855,
+      "downstream_models": [
+        "report_executive_summary"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    },
+    {
+      "model_name": "int_portfolio_analysis_advanced",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 4.385273218154907,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 4.3853,
+      "downstream_models": [
+        "report_portfolio_risk_analysis"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 0.0
+    },
+    {
+      "model_name": "int_position_attribution",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.96537446975708,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.9654,
+      "downstream_models": [
+        "report_position_attribution"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 0.0
+    },
+    {
+      "model_name": "int_sector_performance_attribution",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.9136319160461426,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.9136,
+      "downstream_models": [
+        "report_sector_analysis"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    },
+    {
+      "model_name": "stg_positions_daily",
+      "model_layer": "staging",
+      "execution_time_seconds": 3.843083381652832,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.8431,
+      "downstream_models": [
+        "int_position_enriched"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 0.0
+    },
+    {
+      "model_name": "int_rolling_volatility",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.668949604034424,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.6689,
+      "downstream_models": [
+        "report_executive_summary"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    },
+    {
+      "model_name": "int_performance_attribution_detailed",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.419370412826538,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.4194,
+      "downstream_models": [
+        "report_performance_drivers"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": 0.0
+    },
+    {
+      "model_name": "int_sector_allocation",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.293720245361328,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.2937,
+      "downstream_models": [
+        "fact_sector_performance"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    },
+    {
+      "model_name": "stg_valuations",
+      "model_layer": "staging",
+      "execution_time_seconds": 3.2480483055114746,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.248,
+      "downstream_models": [
+        "int_portfolio_returns"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    },
+    {
+      "model_name": "int_risk_metrics",
+      "model_layer": "intermediate",
+      "execution_time_seconds": 3.2424044609069824,
+      "dependency_fan_out": 1,
+      "estimated_total_view_cost_seconds": 3.2424,
+      "downstream_models": [
+        "fact_portfolio_performance"
+      ],
+      "current_materialization": "view",
+      "recommended_materialization": "table",
+      "estimated_savings_seconds": -0.0
+    }
+  ],
+  "profiled_models": [
+    {
+      "model_name": "int_portfolio_drawdown",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-c9f9-001d-9343000b8212",
+      "execution_time_seconds": 5.585504531860352,
+      "execution_time_ms": 5585,
+      "compilation_time_ms": 0,
+      "self_time_ms": 5585,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 1,
+      "upstream_models": [
+        "int_portfolio_returns"
+      ],
+      "downstream_models": [
+        "report_executive_summary"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 13.7949,
+      "estimated_total_view_cost_seconds": 5.5855
+    },
+    {
+      "model_name": "fact_portfolio_performance",
+      "model_layer": "marts",
+      "materialization": "table",
+      "query_id": "01c2792e-0107-cfbb-001d-9343000c7042",
+      "execution_time_seconds": 5.36909294128418,
+      "execution_time_ms": 5369,
+      "compilation_time_ms": 0,
+      "self_time_ms": 5369,
+      "query_history_source": false,
+      "bytes_scanned": 6144,
+      "rows_produced": 44,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_portfolio_returns",
+        "int_risk_metrics"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 16.8209,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_portfolio_returns",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cfb9-001d-9343000ca02a",
+      "execution_time_seconds": 4.961382150650024,
+      "execution_time_ms": 4961,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4961,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 5,
+      "upstream_models": [
+        "stg_valuations"
+      ],
+      "downstream_models": [
+        "int_portfolio_analysis_advanced",
+        "int_portfolio_drawdown",
+        "int_risk_metrics",
+        "int_rolling_volatility",
+        "fact_portfolio_performance",
+        "report_executive_summary"
+      ],
+      "dependency_fan_out": 6,
+      "critical_path_seconds": 8.2094,
+      "estimated_total_view_cost_seconds": 29.7683
+    },
+    {
+      "model_name": "report_performance_drivers",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cc7c-001d-9343000c8046",
+      "execution_time_seconds": 4.799997091293335,
+      "execution_time_ms": 4799,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4799,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_performance_attribution_detailed"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 19.6483,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "report_portfolio_risk_analysis",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-c9f9-001d-9343000b821a",
+      "execution_time_seconds": 4.775380849838257,
+      "execution_time_ms": 4775,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4775,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_portfolio_analysis_advanced"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 17.3701,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "stg_portfolio_benchmarks",
+      "model_layer": "staging",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf02-001d-9343000c3092",
+      "execution_time_seconds": 4.596080541610718,
+      "execution_time_ms": 4596,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4596,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 4.5961,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_portfolio_analysis_advanced",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cce4-001d-9343000bf0e6",
+      "execution_time_seconds": 4.385273218154907,
+      "execution_time_ms": 4385,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4385,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 2,
+      "window_function_count": 6,
+      "upstream_models": [
+        "int_portfolio_returns"
+      ],
+      "downstream_models": [
+        "report_portfolio_risk_analysis"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 12.5947,
+      "estimated_total_view_cost_seconds": 4.3853
+    },
+    {
+      "model_name": "report_executive_summary",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cfbb-001d-9343000c7046",
+      "execution_time_seconds": 4.228524446487427,
+      "execution_time_ms": 4228,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4228,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 2,
+      "cte_count": 1,
+      "window_function_count": 2,
+      "upstream_models": [
+        "int_portfolio_returns",
+        "int_rolling_volatility",
+        "int_portfolio_drawdown"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 18.0235,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_position_enriched",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf02-001d-9343000c309a",
+      "execution_time_seconds": 4.03348708152771,
+      "execution_time_ms": 4033,
+      "compilation_time_ms": 0,
+      "self_time_ms": 4033,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "upstream_models": [
+        "stg_positions_daily"
+      ],
+      "downstream_models": [
+        "int_position_returns",
+        "int_sector_allocation"
+      ],
+      "dependency_fan_out": 2,
+      "critical_path_seconds": 7.8766,
+      "estimated_total_view_cost_seconds": 8.067
+    },
+    {
+      "model_name": "int_sector_rotation_analysis",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cc66-001d-9343000c409a",
+      "execution_time_seconds": 3.9783432483673096,
+      "execution_time_ms": 3978,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3978,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 2,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 15.4073,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "report_position_attribution",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cf02-001d-9343000c309e",
+      "execution_time_seconds": 3.9693710803985596,
+      "execution_time_ms": 3969,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3969,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_attribution"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 19.3637,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_position_attribution",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-c9f9-001d-9343000b8216",
+      "execution_time_seconds": 3.96537446975708,
+      "execution_time_ms": 3965,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3965,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [
+        "report_position_attribution"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 15.3943,
+      "estimated_total_view_cost_seconds": 3.9654
+    },
+    {
+      "model_name": "stg_benchmarks",
+      "model_layer": "staging",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf02-001d-9343000c308e",
+      "execution_time_seconds": 3.935983896255493,
+      "execution_time_ms": 3935,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3935,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 3.936,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_sector_performance_attribution",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cce4-001d-9343000bf0f2",
+      "execution_time_seconds": 3.9136319160461426,
+      "execution_time_ms": 3913,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3913,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [
+        "report_sector_analysis"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 15.3426,
+      "estimated_total_view_cost_seconds": 3.9136
+    },
+    {
+      "model_name": "stg_benchmark_returns",
+      "model_layer": "staging",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cc66-001d-9343000c4096",
+      "execution_time_seconds": 3.879016876220703,
+      "execution_time_ms": 3879,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3879,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 3.879,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "stg_positions_daily",
+      "model_layer": "staging",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cd9e-001d-9343000c1102",
+      "execution_time_seconds": 3.843083381652832,
+      "execution_time_ms": 3843,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3843,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [],
+      "downstream_models": [
+        "int_position_enriched"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 3.8431,
+      "estimated_total_view_cost_seconds": 3.8431
+    },
+    {
+      "model_name": "int_rolling_volatility",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cfb9-001d-9343000ca02e",
+      "execution_time_seconds": 3.668949604034424,
+      "execution_time_ms": 3668,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3668,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 6,
+      "upstream_models": [
+        "int_portfolio_returns"
+      ],
+      "downstream_models": [
+        "report_executive_summary"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 11.8784,
+      "estimated_total_view_cost_seconds": 3.6689
+    },
+    {
+      "model_name": "fact_sector_performance",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cfb9-001d-9343000ca032",
+      "execution_time_seconds": 3.553706407546997,
+      "execution_time_ms": 3553,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3553,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_sector_allocation"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 14.724,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "int_position_returns",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cfbb-001d-9343000c703a",
+      "execution_time_seconds": 3.5523531436920166,
+      "execution_time_ms": 3552,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3552,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 5,
+      "upstream_models": [
+        "int_position_enriched"
+      ],
+      "downstream_models": [
+        "int_performance_attribution_detailed",
+        "int_position_attribution",
+        "int_position_risk_decomposition",
+        "int_sector_performance_attribution",
+        "int_sector_rotation_analysis",
+        "fact_position_snapshot"
+      ],
+      "dependency_fan_out": 6,
+      "critical_path_seconds": 11.4289,
+      "estimated_total_view_cost_seconds": 21.3141
+    },
+    {
+      "model_name": "int_performance_attribution_detailed",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cce4-001d-9343000bf0ee",
+      "execution_time_seconds": 3.419370412826538,
+      "execution_time_ms": 3419,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3419,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 3,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [
+        "report_performance_drivers"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 14.8483,
+      "estimated_total_view_cost_seconds": 3.4194
+    },
+    {
+      "model_name": "int_sector_allocation",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf0a-001d-9343000c509e",
+      "execution_time_seconds": 3.293720245361328,
+      "execution_time_ms": 3293,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3293,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 1,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_enriched"
+      ],
+      "downstream_models": [
+        "fact_sector_performance"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 11.1703,
+      "estimated_total_view_cost_seconds": 3.2937
+    },
+    {
+      "model_name": "int_position_risk_decomposition",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-cfbb-001d-9343000c703e",
+      "execution_time_seconds": 3.291802167892456,
+      "execution_time_ms": 3291,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3291,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 1,
+      "cte_count": 2,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 14.7207,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "fact_position_snapshot",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf0a-001d-9343000c50a2",
+      "execution_time_seconds": 3.2808022499084473,
+      "execution_time_ms": 3280,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3280,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_position_returns"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 14.7097,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "report_sector_analysis",
+      "model_layer": "marts",
+      "materialization": "view",
+      "query_id": "01c2792e-0107-c9f9-001d-9343000b821e",
+      "execution_time_seconds": 3.2713613510131836,
+      "execution_time_ms": 3271,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3271,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [
+        "int_sector_performance_attribution"
+      ],
+      "downstream_models": [],
+      "dependency_fan_out": 0,
+      "critical_path_seconds": 18.6139,
+      "estimated_total_view_cost_seconds": 0.0
+    },
+    {
+      "model_name": "stg_valuations",
+      "model_layer": "staging",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cf02-001d-9343000c3096",
+      "execution_time_seconds": 3.2480483055114746,
+      "execution_time_ms": 3248,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3248,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 0,
+      "window_function_count": 0,
+      "upstream_models": [],
+      "downstream_models": [
+        "int_portfolio_returns"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 3.248,
+      "estimated_total_view_cost_seconds": 3.248
+    },
+    {
+      "model_name": "int_risk_metrics",
+      "model_layer": "intermediate",
+      "materialization": "view",
+      "query_id": "01c2792d-0107-cce4-001d-9343000bf0ea",
+      "execution_time_seconds": 3.2424044609069824,
+      "execution_time_ms": 3242,
+      "compilation_time_ms": 0,
+      "self_time_ms": 3242,
+      "query_history_source": false,
+      "bytes_scanned": 0,
+      "rows_produced": 1,
+      "partitions_scanned": 0,
+      "warehouse_size": "unknown",
+      "join_count": 0,
+      "cte_count": 1,
+      "window_function_count": 4,
+      "upstream_models": [
+        "int_portfolio_returns"
+      ],
+      "downstream_models": [
+        "fact_portfolio_performance"
+      ],
+      "dependency_fan_out": 1,
+      "critical_path_seconds": 11.4518,
+      "estimated_total_view_cost_seconds": 3.2424
+    }
+  ]
+}
